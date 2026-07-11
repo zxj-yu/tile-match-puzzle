@@ -1,6 +1,7 @@
 # 方块消除大作战 (Tile Match Puzzle)
 
 [English](README.md) | **中文**
+### ▶ [在线试玩](https://zxj-yu.itch.io/tile-match-puzzle) — 无需下载
 
 一款使用 **Godot 4 / GDScript** 从零开发的层叠式三消解谜游戏。在深度堆叠、错综咬合的隐藏方块中层层挖掘，凑齐三个相同即可消除，在限时内清空棋盘。
 
@@ -104,7 +105,7 @@
 - 游戏美术素材来自 [Kenney.nl](https://kenney.nl)（CC0 许可）
 - 音乐：**"Holiday Weasel"** by Kevin MacLeod（[incompetech.com](https://incompetech.com)）
   基于 [Creative Commons: By Attribution 4.0](https://creativecommons.org/licenses/by/4.0/) 许可使用
-
+- 字体：[得意黑](https://github.com/atelier-anchor/smiley-sans)（SIL Open Font License 1.1）
 ---
 
 *本项目为从零学习 Godot 4 游戏开发的自主实践作品。*

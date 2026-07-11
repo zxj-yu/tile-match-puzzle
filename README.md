@@ -1,6 +1,7 @@
 # Tile Match Puzzle
 
 **English** | [中文](README.zh-CN.md)
+### ▶ [Play Online](https://zxj-yu.itch.io/tile-match-puzzle) — no download required
 
 A layered tile-matching puzzle game built from scratch with **Godot 4 / GDScript**. Dig through deeply stacked, interlocking layers of hidden tiles, collect three of a kind to clear them, and empty the board before time runs out.
 
@@ -105,7 +106,7 @@ A layered tile-matching puzzle game built from scratch with **Godot 4 / GDScript
 - Game art assets from [Kenney.nl](https://kenney.nl) (CC0 license)
 - Music: **"Holiday Weasel"** by Kevin MacLeod ([incompetech.com](https://incompetech.com))
   Licensed under [Creative Commons: By Attribution 4.0](https://creativecommons.org/licenses/by/4.0/)
-
+- Font: [Smiley Sans](https://github.com/atelier-anchor/smiley-sans) (SIL Open Font License 1.1)
 ---
 
 *Built as a self-directed learning project exploring game development with Godot 4.*
