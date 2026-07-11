@@ -66,6 +66,7 @@ func _process(delta):
 		time_left = 0
 		timer_running = false
 		game_over = true
+		SoundManager.play("lose")
 		emit_signal("game_lost")
 
 func _load_levels_from_json():
@@ -252,6 +253,8 @@ func _on_tile_clicked(tile):
 	click_locked = true
 	_unlock_next_frame()
 
+	SoundManager.play("click")
+
 	tiles.erase(tile)
 	_update_cover_states()
 	emit_signal("progress_changed", tiles.size())
@@ -297,6 +300,7 @@ func _add_to_slots(item):
 		timer_running = false
 		if mode == Mode.ENDLESS:
 			SaveManager.record_endless(endless_wave)
+		SoundManager.play("lose")
 		emit_signal("game_lost")
 		return
 	_check_win()
@@ -337,6 +341,11 @@ func _award_score_with_effect(pos: Vector2):
 	SaveManager.add_score(points)
 	emit_signal("score_updated", current_score, combo_count)
 
+	if combo_count >= 3:
+		SoundManager.play("combo")
+	else:
+		SoundManager.play("match")
+
 	var text = "+" + str(points)
 	var color = Color(1, 0.85, 0.2)
 	if combo_count >= 3:
@@ -349,6 +358,7 @@ func use_skill_slot():
 	if skill_slot_left <= 0 or game_over or is_paused:
 		return
 	skill_slot_left -= 1
+	SoundManager.play("skill")
 	slot_count += 1
 	_draw_slot_background()
 	_relayout_slots()
@@ -360,6 +370,7 @@ func use_skill_time():
 	if mode != Mode.CAMPAIGN:
 		return
 	skill_time_left_count -= 1
+	SoundManager.play("skill")
 	time_left += 5.0
 	emit_signal("time_updated", time_left)
 	emit_signal("skills_updated", skill_slot_left, skill_time_left_count, skill_shuffle_left)
@@ -368,6 +379,7 @@ func use_skill_shuffle():
 	if skill_shuffle_left <= 0 or game_over or is_paused:
 		return
 	skill_shuffle_left -= 1
+	SoundManager.play("skill")
 	var type_list = []
 	for tile in tiles:
 		type_list.append(tile["node"].type_id)
@@ -408,6 +420,7 @@ func _check_win():
 
 	game_over = true
 	timer_running = false
+	SoundManager.play("win")
 	var time_used = current_time_limit - time_left
 	var stars = _calc_stars(time_used)
 	SaveManager.record_level_clear(current_level, stars)
