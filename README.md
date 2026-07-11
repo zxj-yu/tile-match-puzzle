@@ -97,9 +97,10 @@ A layered tile-matching puzzle game built from scratch with **Godot 4 / GDScript
 - [x] Timer + stars + ranks + combos + power-ups
 - [x] Sound effects and background music
 - [x] Candy-style UI buttons
-- [ ] Unified visual theme pass
-- [ ] More special tiles (bomb / chained)
-- [ ] Web export and itch.io release
+- [x] 糖果风 UI 按钮
+- [x] Unified visual theme pass
+- [x] More special tiles (bomb / chained)
+- [x] Web export and itch.io release
 
 ## 📄 Asset Credits
 
