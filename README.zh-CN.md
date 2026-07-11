@@ -7,8 +7,8 @@
 > 从零开始学习游戏开发的完整实践 —— 涵盖玩法设计、难度平衡、UI/UX、音频与存档系统。
 
 <!-- 截图占位 -->
-<!-- ![游戏截图](screenshots/gameplay.png) -->
-<!-- 建议放一张游戏界面截图 + 一个消除特效的 GIF -->
+![游戏截图](screenshots/screenshot.png)
+![游戏首页](screenshots/playpage.png)
 
 ## ✨ 核心特性
 

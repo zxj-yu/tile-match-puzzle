@@ -7,8 +7,9 @@ A layered tile-matching puzzle game built from scratch with **Godot 4 / GDScript
 > A self-directed journey into game development — covering gameplay design, difficulty balancing, UI/UX, audio, and persistence systems.
 
 <!-- Screenshot placeholder -->
-<!-- ![Gameplay](screenshots/gameplay.png) -->
-<!-- Recommended: one gameplay screenshot + one GIF of the match effect -->
+![Gameplay](screenshots/screenshot.png)
+![Title Screen](screenshots/playpage.png)
+
 
 ## ✨ Features
 
