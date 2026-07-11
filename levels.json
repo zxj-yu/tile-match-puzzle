@@ -1,0 +1,557 @@
+{
+  "levels": [
+    {
+      "name": "起步",
+      "types": 5,
+      "time_limit": 80,
+      "star_times": [
+        36,
+        56,
+        80
+      ],
+      "layers": [
+        [
+          "XXXXX",
+          "XXXXX",
+          "XXXXX",
+          "XXXXX"
+        ],
+        [
+          "XXXX",
+          "XXXX",
+          "XX.."
+        ]
+      ]
+    },
+    {
+      "name": "入门",
+      "types": 6,
+      "time_limit": 85,
+      "star_times": [
+        38,
+        59,
+        85
+      ],
+      "layers": [
+        [
+          "XXXXXX",
+          "XXXXXX",
+          "XXXXXX",
+          "XXXXXX"
+        ],
+        [
+          "XXXXX",
+          "XXXXX",
+          "XXXXX"
+        ]
+      ]
+    },
+    {
+      "name": "熟练",
+      "types": 6,
+      "time_limit": 90,
+      "star_times": [
+        40,
+        62,
+        90
+      ],
+      "layers": [
+        [
+          "XXXXXX",
+          "XXXXXX",
+          "XXXXXX",
+          "XXXXXX",
+          "XXXXXX"
+        ],
+        [
+          "XXXXX",
+          "XXXXX",
+          "XXXXX",
+          "XXXXX"
+        ],
+        [
+          "XXX",
+          "X.."
+        ]
+      ]
+    },
+    {
+      "name": "交错",
+      "types": 7,
+      "time_limit": 95,
+      "star_times": [
+        42,
+        66,
+        95
+      ],
+      "layers": [
+        [
+          "XXXXXXX",
+          "XXXXXXX",
+          "XXXXXXX",
+          "XXXXXXX",
+          "XXXXXXX"
+        ],
+        [
+          "XXXXXX",
+          "XXXXXX",
+          "XXXXXX",
+          "XXXXXX"
+        ],
+        [
+          "XXXX",
+          "XXXX",
+          "XX.."
+        ]
+      ]
+    },
+    {
+      "name": "爱心",
+      "types": 7,
+      "time_limit": 100,
+      "star_times": [
+        45,
+        70,
+        100
+      ],
+      "layers": [
+        [
+          ".XX.XX.",
+          "XXXXXXX",
+          "XXXXXXX",
+          ".XXXXX.",
+          "..XXX..",
+          "...X..."
+        ],
+        [
+          "XXXXX",
+          "XXXXX",
+          "XXXXX"
+        ]
+      ]
+    },
+    {
+      "name": "菱形",
+      "types": 8,
+      "time_limit": 100,
+      "star_times": [
+        45,
+        70,
+        100
+      ],
+      "layers": [
+        [
+          "...X...",
+          "..XXX..",
+          ".XXXXX.",
+          "XXXXXXX",
+          ".XXXXX.",
+          "..XXX..",
+          "...X..."
+        ],
+        [
+          "XXXXX",
+          "XXXXX",
+          "XXXXX",
+          "XXXXX"
+        ]
+      ]
+    },
+    {
+      "name": "堆叠",
+      "types": 8,
+      "time_limit": 110,
+      "star_times": [
+        49,
+        77,
+        110
+      ],
+      "layers": [
+        [
+          "XXXXXXX",
+          "XXXXXXX",
+          "XXXXXXX",
+          "XXXXXXX",
+          "XXXXXXX"
+        ],
+        [
+          "XXXXXX",
+          "XXXXXX",
+          "XXXXXX",
+          "XXXXXX"
+        ],
+        [
+          "XXXXX",
+          "XXXXX",
+          "XXXXX"
+        ],
+        [
+          "XX",
+          "XX"
+        ]
+      ]
+    },
+    {
+      "name": "十字",
+      "types": 9,
+      "time_limit": 110,
+      "star_times": [
+        49,
+        77,
+        110
+      ],
+      "layers": [
+        [
+          "..XXX..",
+          "..XXX..",
+          "XXXXXXX",
+          "XXXXXXX",
+          "..XXX..",
+          "..XXX.."
+        ],
+        [
+          "XXXXX",
+          "XXXXX",
+          "XXXXX",
+          "XXXX."
+        ]
+      ]
+    },
+    {
+      "name": "深入",
+      "types": 9,
+      "time_limit": 120,
+      "star_times": [
+        54,
+        84,
+        120
+      ],
+      "layers": [
+        [
+          "XXXXXXXX",
+          "XXXXXXXX",
+          "XXXXXXXX",
+          "XXXXXXXX",
+          "XXXXXXXX"
+        ],
+        [
+          "XXXXXXX",
+          "XXXXXXX",
+          "XXXXXXX",
+          "XXXXXXX"
+        ],
+        [
+          "XXXXX",
+          "XXXXX",
+          "XXX.."
+        ]
+      ]
+    },
+    {
+      "name": "迷阵",
+      "types": 10,
+      "time_limit": 125,
+      "star_times": [
+        56,
+        87,
+        125
+      ],
+      "layers": [
+        [
+          "XXXXXXXX",
+          "XXXXXXXX",
+          "XXXXXXXX",
+          "XXXXXXXX",
+          "XXXXXXXX",
+          "XXXXXXXX"
+        ],
+        [
+          "XXXXXXX",
+          "XXXXXXX",
+          "XXXXXXX",
+          "XXXXXXX"
+        ],
+        [
+          "XXXXX",
+          "XXXXX",
+          "XXXX."
+        ]
+      ]
+    },
+    {
+      "name": "繁复",
+      "types": 10,
+      "time_limit": 130,
+      "star_times": [
+        58,
+        91,
+        130
+      ],
+      "layers": [
+        [
+          "XXXXXXXX",
+          "XXXXXXXX",
+          "XXXXXXXX",
+          "XXXXXXXX",
+          "XXXXXXXX",
+          "XXXXXXXX"
+        ],
+        [
+          "XXXXXXX",
+          "XXXXXXX",
+          "XXXXXXX",
+          "XXXXXXX",
+          "XXXXXXX"
+        ],
+        [
+          "XXXX",
+          "XXXX",
+          "XX.."
+        ]
+      ]
+    },
+    {
+      "name": "双心",
+      "types": 11,
+      "time_limit": 135,
+      "star_times": [
+        60,
+        94,
+        135
+      ],
+      "layers": [
+        [
+          ".XX.XX.",
+          "XXXXXXX",
+          "XXXXXXX",
+          ".XXXXX.",
+          "..XXX..",
+          "...X..."
+        ],
+        [
+          ".XX.XX.",
+          "XXXXXXX",
+          "XXXXXXX",
+          ".XXXXX.",
+          "..XXX..",
+          "...X..."
+        ],
+        [
+          "XXX",
+          "XXX"
+        ]
+      ]
+    },
+    {
+      "name": "危机",
+      "types": 11,
+      "time_limit": 140,
+      "star_times": [
+        63,
+        98,
+        140
+      ],
+      "layers": [
+        [
+          "XXXXXXXXX",
+          "XXXXXXXXX",
+          "XXXXXXXXX",
+          "XXXXXXXXX",
+          "XXXXXXXXX",
+          "XXXXXXXXX"
+        ],
+        [
+          "XXXXXXX",
+          "XXXXXXX",
+          "XXXXXXX",
+          "XXXXXXX",
+          "XXXXXXX"
+        ],
+        [
+          "XXXXX",
+          "XXXXX",
+          "XXX.."
+        ]
+      ]
+    },
+    {
+      "name": "高压",
+      "types": 12,
+      "time_limit": 145,
+      "star_times": [
+        65,
+        101,
+        145
+      ],
+      "layers": [
+        [
+          "XXXXXXXXX",
+          "XXXXXXXXX",
+          "XXXXXXXXX",
+          "XXXXXXXXX",
+          "XXXXXXXXX",
+          "XXXXXXXXX"
+        ],
+        [
+          "XXXXXXXX",
+          "XXXXXXXX",
+          "XXXXXXXX",
+          "XXXXXXXX",
+          "XXXXXXXX"
+        ],
+        [
+          "XXXXX",
+          "XXXXX",
+          "XXXXX",
+          "XXXXX"
+        ]
+      ]
+    },
+    {
+      "name": "眩目",
+      "types": 12,
+      "time_limit": 150,
+      "star_times": [
+        67,
+        105,
+        150
+      ],
+      "layers": [
+        [
+          "XXXXXXXXX",
+          "XXXXXXXXX",
+          "XXXXXXXXX",
+          "XXXXXXXXX",
+          "XXXXXXXXX",
+          "XXXXXXXXX"
+        ],
+        [
+          "XXXXXXXX",
+          "XXXXXXXX",
+          "XXXXXXXX",
+          "XXXXXXXX",
+          "XXXXXXXX"
+        ],
+        [
+          "XXXXXX",
+          "XXXXXX",
+          "XXXXXX",
+          "XXXXXX"
+        ],
+        [
+          "XXX",
+          "XX."
+        ]
+      ]
+    },
+    {
+      "name": "极限",
+      "types": 13,
+      "time_limit": 160,
+      "star_times": [
+        72,
+        112,
+        160
+      ],
+      "layers": [
+        [
+          "XXXXXXXXXX",
+          "XXXXXXXXXX",
+          "XXXXXXXXXX",
+          "XXXXXXXXXX",
+          "XXXXXXXXXX",
+          "XXXXXXXXXX"
+        ],
+        [
+          "XXXXXXXX",
+          "XXXXXXXX",
+          "XXXXXXXX",
+          "XXXXXXXX",
+          "XXXXXXXX"
+        ],
+        [
+          "XXXXXX",
+          "XXXXXX",
+          "XXXXXX",
+          "XXXXX."
+        ]
+      ]
+    },
+    {
+      "name": "深渊",
+      "types": 14,
+      "time_limit": 170,
+      "star_times": [
+        76,
+        118,
+        170
+      ],
+      "layers": [
+        [
+          "XXXXXXXXXX",
+          "XXXXXXXXXX",
+          "XXXXXXXXXX",
+          "XXXXXXXXXX",
+          "XXXXXXXXXX",
+          "XXXXXXXXXX"
+        ],
+        [
+          "XXXXXXXXX",
+          "XXXXXXXXX",
+          "XXXXXXXXX",
+          "XXXXXXXXX",
+          "XXXXXXXXX"
+        ],
+        [
+          "XXXXXX",
+          "XXXXXX",
+          "XXXXXX",
+          "XXXXXX"
+        ],
+        [
+          "XXX",
+          "XXX"
+        ]
+      ]
+    },
+    {
+      "name": "终焉",
+      "types": 15,
+      "time_limit": 180,
+      "star_times": [
+        81,
+        125,
+        180
+      ],
+      "layers": [
+        [
+          "XXXXXXXXXX",
+          "XXXXXXXXXX",
+          "XXXXXXXXXX",
+          "XXXXXXXXXX",
+          "XXXXXXXXXX",
+          "XXXXXXXXXX"
+        ],
+        [
+          "XXXXXXXXX",
+          "XXXXXXXXX",
+          "XXXXXXXXX",
+          "XXXXXXXXX",
+          "XXXXXXXXX",
+          "XXXXXXXXX"
+        ],
+        [
+          "XXXXXXX",
+          "XXXXXXX",
+          "XXXXXXX",
+          "XXXXXXX"
+        ],
+        [
+          "XXXX",
+          "XXXX",
+          "XXX."
+        ]
+      ]
+    }
+  ]
+}

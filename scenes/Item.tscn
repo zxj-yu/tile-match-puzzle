@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://by0csnxrq1jri"]
+
+[ext_resource type="Script" uid="uid://bc04st58lblef" path="res://scripts/Item.gd" id="1_j3wwg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0bbpv"]
+size = Vector2(74, 74)
+
+[node name="Item" type="Area2D" unique_id=435643395]
+script = ExtResource("1_j3wwg")
+
+[node name="Background" type="ColorRect" parent="." unique_id=699334081]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 78.0
+offset_bottom = 78.0
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="." unique_id=288297383]
+visible = false
+offset_left = 10.0
+offset_top = 25.0
+offset_right = 33.0
+offset_bottom = 48.0
+theme_override_font_sizes/font_size = 18
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1508890616]
+position = Vector2(40, 40)
+shape = SubResource("RectangleShape2D_0bbpv")
+
+[node name="Icon" type="Sprite2D" parent="." unique_id=1806379375]
+position = Vector2(40, 40)
+scale = Vector2(0.4, 0.4)
