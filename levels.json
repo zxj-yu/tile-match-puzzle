@@ -1,43 +1,247 @@
 {
   "levels": [
     {
-      "name": "起步",
+      "name": "初峰",
       "types": 5,
-      "time_limit": 80,
+      "time_limit": 110,
+      "slot_count": 7,
       "star_times": [
-        36,
-        56,
-        80
+        49,
+        77,
+        110
       ],
       "layers": [
         [
-          "XXXXX",
-          "XXXXX",
-          "XXXXX",
-          "XXXXX"
+          "....XX....",
+          "...XXXX...",
+          "..XXXXXX..",
+          ".XXXXXXXX.",
+          "XXXXXXXXXX"
         ],
         [
-          "XXXX",
-          "XXXX",
-          "XX.."
+          "...XX...",
+          "..XXXX..",
+          ".XXXXXX.",
+          "XXXXXXXX"
+        ],
+        [
+          "..XX..",
+          ".XXXX.",
+          "XXXX.."
         ]
       ]
     },
     {
-      "name": "入门",
+      "name": "双子塔",
       "types": 6,
-      "time_limit": 85,
+      "time_limit": 120,
+      "slot_count": 7,
       "star_times": [
-        38,
-        59,
-        85
+        54,
+        84,
+        120
       ],
       "layers": [
         [
-          "XXXXXX",
-          "XXXXXX",
-          "XXXXXX",
-          "XXXXXX"
+          "XXXX..XXXX",
+          "XXXX..XXXX",
+          "XXXX..XXXX",
+          "XXXX..XXXX",
+          "XXXX..XXXX"
+        ],
+        [
+          "XXXX..XXXX",
+          "XXXX..XXXX",
+          "XXXX..XXXX",
+          "XXXX..XXXX"
+        ],
+        [
+          "XXX..XXX",
+          "XXX..XXX",
+          "XXX..XXX"
+        ]
+      ]
+    },
+    {
+      "name": "菱渊",
+      "types": 7,
+      "time_limit": 130,
+      "slot_count": 7,
+      "star_times": [
+        58,
+        91,
+        130
+      ],
+      "layers": [
+        [
+          "....XXX....",
+          "...XXXXX...",
+          ".XXXXXXXXX.",
+          ".XXXXXXXXX.",
+          "...XXXXX...",
+          "....XXX...."
+        ],
+        [
+          "...XXX...",
+          "..XXXXX..",
+          "XXXXXXXXX",
+          "..XXXXX..",
+          "...XXX..."
+        ],
+        [
+          "..XXX..",
+          ".XXXXX.",
+          ".XXXXX.",
+          "..XXX.."
+        ]
+      ]
+    },
+    {
+      "name": "霜塔",
+      "types": 8,
+      "time_limit": 140,
+      "slot_count": 6,
+      "star_times": [
+        63,
+        98,
+        140
+      ],
+      "layers": [
+        [
+          ".....X.....",
+          "....XXX....",
+          "...XIXXX...",
+          "..XXXXXXX..",
+          ".XXXXXXIXX.",
+          "XXIXXXXXXXX"
+        ],
+        [
+          "....X....",
+          "...XXX...",
+          "..XIXXX..",
+          ".XXXXXIX.",
+          "XXXXXXXXX"
+        ],
+        [
+          "...X...",
+          "..XIX..",
+          ".XXXXX.",
+          "XXXXXXX"
+        ],
+        [
+          "XXXX",
+          "XXX."
+        ]
+      ]
+    },
+    {
+      "name": "冻十字",
+      "types": 9,
+      "time_limit": 150,
+      "slot_count": 6,
+      "star_times": [
+        67,
+        105,
+        150
+      ],
+      "layers": [
+        [
+          "...XXXXXX...",
+          "XXXXXIXXXXXX",
+          "XXXXXXXXXXXX",
+          "XXIXXXXXXIXX",
+          "...XXXXXX...",
+          "...XXXXXX..."
+        ],
+        [
+          "..XXXXX...",
+          "XXXXXXXXXX",
+          "XXXXIXXXXX",
+          "..XXXXX...",
+          "..XXXIX..."
+        ],
+        [
+          "..XXXX..",
+          "XXXXIXXX",
+          "XXXXXXXX",
+          "..XXXX.."
+        ],
+        [
+          "XXXX",
+          "XXX."
+        ]
+      ]
+    },
+    {
+      "name": "寒峰双子",
+      "types": 10,
+      "time_limit": 160,
+      "slot_count": 6,
+      "star_times": [
+        72,
+        112,
+        160
+      ],
+      "layers": [
+        [
+          "XXIXX..XXXXX",
+          "XXXXX..XXXXX",
+          "XXXXX..XXIXX",
+          "XXXXX..XXXXX",
+          "XXXXX..XXXXX",
+          "XXXXI..XXXXX"
+        ],
+        [
+          "XXXXX..XXXXX",
+          "XXXIX..XXXXX",
+          "XXXXX..XXXXX",
+          "XXXXX..XIXXX",
+          "XXXXX..XXXXX"
+        ],
+        [
+          "XXXX..XXXX",
+          "XXXX..XXXX",
+          "XXIX..XIXX",
+          "XXXX..XXXX"
+        ],
+        [
+          "XXX..XXX",
+          "XXX..XXX",
+          "XXX..XX."
+        ]
+      ]
+    },
+    {
+      "name": "石城",
+      "types": 11,
+      "time_limit": 160,
+      "slot_count": 6,
+      "star_times": [
+        72,
+        112,
+        160
+      ],
+      "layers": [
+        [
+          "XXXXXSXXXXXX",
+          "XX........XX",
+          "XX........XX",
+          "XX........XX",
+          "XX........XX",
+          "XXXXXXXSXXXX"
+        ],
+        [
+          "XXXXSXXXXX",
+          "XX......XX",
+          "XX......XX",
+          "XX......XX",
+          "XXXXXXXXXX"
+        ],
+        [
+          "XXXXXXXX",
+          "XXXSXXXX",
+          "XXXXXXSX",
+          "XXXXXXXX"
         ],
         [
           "XXXXX",
@@ -47,27 +251,125 @@
       ]
     },
     {
-      "name": "熟练",
-      "types": 6,
-      "time_limit": 90,
+      "name": "石菱",
+      "types": 12,
+      "time_limit": 170,
+      "slot_count": 6,
       "star_times": [
-        40,
-        62,
-        90
+        76,
+        118,
+        170
       ],
       "layers": [
         [
-          "XXXXXX",
-          "XXXXXX",
-          "XXXXXX",
-          "XXXXXX",
-          "XXXXXX"
+          ".....XX.....",
+          "....XXXX....",
+          ".XXSXXXXXXX.",
+          ".XXXXXXXXSX.",
+          "....XXXX....",
+          ".....XX....."
         ],
         [
-          "XXXXX",
-          "XXXXX",
-          "XXXXX",
-          "XXXXX"
+          "....XXX....",
+          "...XXXXX...",
+          "XXXXXSXXXXX",
+          "...XXXXX...",
+          "....XXX...."
+        ],
+        [
+          "...XXX...",
+          "..XXXXX..",
+          "XXXXSXXXX",
+          "..XXXXS..",
+          "...XXX..."
+        ],
+        [
+          "..XX..",
+          "XXXXXX",
+          "......"
+        ]
+      ]
+    },
+    {
+      "name": "巨塔",
+      "types": 13,
+      "time_limit": 175,
+      "slot_count": 6,
+      "star_times": [
+        78,
+        122,
+        175
+      ],
+      "layers": [
+        [
+          ".....XX.....",
+          "....XXXX....",
+          "...XXXXXX...",
+          "..XXSXXXXX..",
+          ".XXXXXXXXXX.",
+          "XXXXXXXXSXXX"
+        ],
+        [
+          ".....X.....",
+          "....XXX....",
+          "...XXXXX...",
+          "..XXXSXXX..",
+          ".XXSXXXXXX.",
+          "XXXXXXXXXXX"
+        ],
+        [
+          "....X....",
+          "...XXX...",
+          "..XXSXX..",
+          ".XXXXXXX.",
+          "XXXXXXXXX"
+        ],
+        [
+          "..XX..",
+          ".XXXX.",
+          "XXXX.."
+        ]
+      ]
+    },
+    {
+      "name": "困阵",
+      "types": 14,
+      "time_limit": 185,
+      "slot_count": 6,
+      "star_times": [
+        83,
+        129,
+        185
+      ],
+      "layers": [
+        [
+          "...XXIXXX...",
+          "XXXXXXXXXXXX",
+          "XXXXSXXXXXXX",
+          "XXXXXXXXSXXX",
+          "...XXXXXX...",
+          "...XXXIXX..."
+        ],
+        [
+          "...XXXXX...",
+          "XXXXXXXXXXX",
+          "XXXIXXXXXXX",
+          "XXXXXXXXXXX",
+          "...XXXXI...",
+          "...XXXXX..."
+        ],
+        [
+          "..XXXX...",
+          "XXXIXXXXX",
+          "XXXXSXXXX",
+          "..XXXX...",
+          "..XXXX..."
+        ],
+        [
+          "..XXX..",
+          "XXIXXXX",
+          "XXXXXXX",
+          "..XXX.."
         ],
         [
           "XXX",
@@ -76,475 +378,223 @@
       ]
     },
     {
-      "name": "交错",
-      "types": 7,
-      "time_limit": 95,
-      "star_times": [
-        42,
-        66,
-        95
-      ],
-      "layers": [
-        [
-          "XXXXXXX",
-          "XXXXXXX",
-          "XXXXXXX",
-          "XXXXXXX",
-          "XXXXXXX"
-        ],
-        [
-          "XXXXXX",
-          "XXXXXX",
-          "XXXXXX",
-          "XXXXXX"
-        ],
-        [
-          "XXXX",
-          "XXXX",
-          "XX.."
-        ]
-      ]
-    },
-    {
-      "name": "爱心",
-      "types": 7,
-      "time_limit": 100,
-      "star_times": [
-        45,
-        70,
-        100
-      ],
-      "layers": [
-        [
-          ".XX.XX.",
-          "XXXXXXX",
-          "XXXXXXX",
-          ".XXXXX.",
-          "..XXX..",
-          "...X..."
-        ],
-        [
-          "XXXXX",
-          "XXXXX",
-          "XXXXX"
-        ]
-      ]
-    },
-    {
-      "name": "菱形",
-      "types": 8,
-      "time_limit": 100,
-      "star_times": [
-        45,
-        70,
-        100
-      ],
-      "layers": [
-        [
-          "...X...",
-          "..XXX..",
-          ".XXXXX.",
-          "XXXXXXX",
-          ".XXXXX.",
-          "..XXX..",
-          "...X..."
-        ],
-        [
-          "XXXXX",
-          "XXXXX",
-          "XXXXX",
-          "XXXXX"
-        ]
-      ]
-    },
-    {
-      "name": "堆叠",
-      "types": 8,
-      "time_limit": 110,
-      "star_times": [
-        49,
-        77,
-        110
-      ],
-      "layers": [
-        [
-          "XXXXXXX",
-          "XXXXXXX",
-          "XXXXXXX",
-          "XXXXXXX",
-          "XXXXXXX"
-        ],
-        [
-          "XXXXXX",
-          "XXXXXX",
-          "XXXXXX",
-          "XXXXXX"
-        ],
-        [
-          "XXXXX",
-          "XXXXX",
-          "XXXXX"
-        ],
-        [
-          "XX",
-          "XX"
-        ]
-      ]
-    },
-    {
-      "name": "十字",
-      "types": 9,
-      "time_limit": 110,
-      "star_times": [
-        49,
-        77,
-        110
-      ],
-      "layers": [
-        [
-          "..XXX..",
-          "..XXX..",
-          "XXXXXXX",
-          "XXXXXXX",
-          "..XXX..",
-          "..XXX.."
-        ],
-        [
-          "XXXXX",
-          "XXXXX",
-          "XXXXX",
-          "XXXX."
-        ]
-      ]
-    },
-    {
-      "name": "深入",
-      "types": 9,
-      "time_limit": 120,
-      "star_times": [
-        54,
-        84,
-        120
-      ],
-      "layers": [
-        [
-          "XXXXXXXX",
-          "XXXXXXXX",
-          "XXXXXXXX",
-          "XXXXXXXX",
-          "XXXXXXXX"
-        ],
-        [
-          "XXXXXXX",
-          "XXXXXXX",
-          "XXXXXXX",
-          "XXXXXXX"
-        ],
-        [
-          "XXXXX",
-          "XXXXX",
-          "XXX.."
-        ]
-      ]
-    },
-    {
-      "name": "迷阵",
-      "types": 10,
-      "time_limit": 125,
-      "star_times": [
-        56,
-        87,
-        125
-      ],
-      "layers": [
-        [
-          "XXXXXXXX",
-          "XXXXXXXX",
-          "XXXXXXXX",
-          "XXXXXXXX",
-          "XXXXXXXX",
-          "XXXXXXXX"
-        ],
-        [
-          "XXXXXXX",
-          "XXXXXXX",
-          "XXXXXXX",
-          "XXXXXXX"
-        ],
-        [
-          "XXXXX",
-          "XXXXX",
-          "XXXX."
-        ]
-      ]
-    },
-    {
-      "name": "繁复",
-      "types": 10,
-      "time_limit": 130,
-      "star_times": [
-        58,
-        91,
-        130
-      ],
-      "layers": [
-        [
-          "XXXXXXXX",
-          "XXXXXXXX",
-          "XXXXXXXX",
-          "XXXXXXXX",
-          "XXXXXXXX",
-          "XXXXXXXX"
-        ],
-        [
-          "XXXXXXX",
-          "XXXXXXX",
-          "XXXXXXX",
-          "XXXXXXX",
-          "XXXXXXX"
-        ],
-        [
-          "XXXX",
-          "XXXX",
-          "XX.."
-        ]
-      ]
-    },
-    {
-      "name": "双心",
-      "types": 11,
-      "time_limit": 135,
-      "star_times": [
-        60,
-        94,
-        135
-      ],
-      "layers": [
-        [
-          ".XX.XX.",
-          "XXXXXXX",
-          "XXXXXXX",
-          ".XXXXX.",
-          "..XXX..",
-          "...X..."
-        ],
-        [
-          ".XX.XX.",
-          "XXXXXXX",
-          "XXXXXXX",
-          ".XXXXX.",
-          "..XXX..",
-          "...X..."
-        ],
-        [
-          "XXX",
-          "XXX"
-        ]
-      ]
-    },
-    {
-      "name": "危机",
-      "types": 11,
-      "time_limit": 140,
-      "star_times": [
-        63,
-        98,
-        140
-      ],
-      "layers": [
-        [
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX"
-        ],
-        [
-          "XXXXXXX",
-          "XXXXXXX",
-          "XXXXXXX",
-          "XXXXXXX",
-          "XXXXXXX"
-        ],
-        [
-          "XXXXX",
-          "XXXXX",
-          "XXX.."
-        ]
-      ]
-    },
-    {
-      "name": "高压",
-      "types": 12,
-      "time_limit": 145,
-      "star_times": [
-        65,
-        101,
-        145
-      ],
-      "layers": [
-        [
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX"
-        ],
-        [
-          "XXXXXXXX",
-          "XXXXXXXX",
-          "XXXXXXXX",
-          "XXXXXXXX",
-          "XXXXXXXX"
-        ],
-        [
-          "XXXXX",
-          "XXXXX",
-          "XXXXX",
-          "XXXXX"
-        ]
-      ]
-    },
-    {
-      "name": "眩目",
-      "types": 12,
-      "time_limit": 150,
-      "star_times": [
-        67,
-        105,
-        150
-      ],
-      "layers": [
-        [
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX"
-        ],
-        [
-          "XXXXXXXX",
-          "XXXXXXXX",
-          "XXXXXXXX",
-          "XXXXXXXX",
-          "XXXXXXXX"
-        ],
-        [
-          "XXXXXX",
-          "XXXXXX",
-          "XXXXXX",
-          "XXXXXX"
-        ],
-        [
-          "XXX",
-          "XX."
-        ]
-      ]
-    },
-    {
-      "name": "极限",
-      "types": 13,
-      "time_limit": 160,
-      "star_times": [
-        72,
-        112,
-        160
-      ],
-      "layers": [
-        [
-          "XXXXXXXXXX",
-          "XXXXXXXXXX",
-          "XXXXXXXXXX",
-          "XXXXXXXXXX",
-          "XXXXXXXXXX",
-          "XXXXXXXXXX"
-        ],
-        [
-          "XXXXXXXX",
-          "XXXXXXXX",
-          "XXXXXXXX",
-          "XXXXXXXX",
-          "XXXXXXXX"
-        ],
-        [
-          "XXXXXX",
-          "XXXXXX",
-          "XXXXXX",
-          "XXXXX."
-        ]
-      ]
-    },
-    {
-      "name": "深渊",
-      "types": 14,
-      "time_limit": 170,
-      "star_times": [
-        76,
-        118,
-        170
-      ],
-      "layers": [
-        [
-          "XXXXXXXXXX",
-          "XXXXXXXXXX",
-          "XXXXXXXXXX",
-          "XXXXXXXXXX",
-          "XXXXXXXXXX",
-          "XXXXXXXXXX"
-        ],
-        [
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX"
-        ],
-        [
-          "XXXXXX",
-          "XXXXXX",
-          "XXXXXX",
-          "XXXXXX"
-        ],
-        [
-          "XXX",
-          "XXX"
-        ]
-      ]
-    },
-    {
-      "name": "终焉",
+      "name": "回环",
       "types": 15,
-      "time_limit": 180,
+      "time_limit": 190,
+      "slot_count": 6,
       "star_times": [
-        81,
-        125,
-        180
+        85,
+        133,
+        190
       ],
       "layers": [
         [
-          "XXXXXXXXXX",
-          "XXXXXXXXXX",
-          "XXXXXXXXXX",
-          "XXXXXXXXXX",
-          "XXXXXXXXXX",
-          "XXXXXXXXXX"
+          "XXXSXXXXIXXX",
+          "XX........XX",
+          "XX........XX",
+          "XX........XX",
+          "XX........XX",
+          "XXIXXXXXXSXX"
         ],
         [
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX"
+          "XXXIXXXXXX",
+          "XXXXXXXXXX",
+          "XXXXXSXXXX",
+          "XXXXXXXXXX",
+          "XXXXXXXIXX"
         ],
         [
-          "XXXXXXX",
-          "XXXXXXX",
-          "XXXXXXX",
-          "XXXXXXX"
+          "XXIXXXXX",
+          "XX....XX",
+          "XX....XX",
+          "XXXXXIXX"
+        ],
+        [
+          "XXXXX",
+          "XXIXX",
+          "XXXXX"
+        ]
+      ]
+    },
+    {
+      "name": "绝壁双塔",
+      "types": 16,
+      "time_limit": 200,
+      "slot_count": 6,
+      "star_times": [
+        90,
+        140,
+        200
+      ],
+      "layers": [
+        [
+          "XIXXX..XXXXX",
+          "XXXSX..XXXXX",
+          "XXXXX..XXXXX",
+          "XXXXX..XXXXX",
+          "XXXXX..XSXXX",
+          "XXXXX..XXXIX"
+        ],
+        [
+          "XXXXX..XXXXX",
+          "XXXXX..XXXXX",
+          "XXSXX..XXXXX",
+          "XXXXX..XXIXX",
+          "XXXXX..XXXXX",
+          "XXXIX..XXXXX"
+        ],
+        [
+          "XXXX..XXXX",
+          "XXIX..XXXX",
+          "XXXX..XXXX",
+          "XXXX..XIXX",
+          "XXXX..XXXX"
+        ],
+        [
+          "XXX..XXX",
+          "XXX..SXX",
+          "XXX..XXX",
+          "XXX..XXX"
+        ],
+        [
+          "XXXX",
+          "XX.."
+        ]
+      ]
+    },
+    {
+      "name": "千层菱",
+      "types": 17,
+      "time_limit": 210,
+      "slot_count": 5,
+      "star_times": [
+        94,
+        147,
+        210
+      ],
+      "layers": [
+        [
+          ".....XX.....",
+          "....XXIX....",
+          ".XXSXXXXXXX.",
+          ".XXXXXXXXXX.",
+          "....XXXX....",
+          ".....IX....."
+        ],
+        [
+          ".....XX.....",
+          "....XXXX....",
+          ".XXXIXXXXXX.",
+          ".XXXXXXXIXX.",
+          "....XXXX....",
+          ".....XX....."
+        ],
+        [
+          "....XX....",
+          "..XXIXXX..",
+          "XXXXXSXXXX",
+          "..XXXXXX..",
+          "....XX...."
+        ],
+        [
+          "...XX...",
+          ".XXXXXX.",
+          ".XXIXXX.",
+          "...XX..."
+        ],
+        [
+          ".XXX.",
+          "XXXXX",
+          ".XX.."
+        ]
+      ]
+    },
+    {
+      "name": "通天塔",
+      "types": 18,
+      "time_limit": 220,
+      "slot_count": 5,
+      "star_times": [
+        99,
+        154,
+        220
+      ],
+      "layers": [
+        [
+          ".....XX.....",
+          "....XXXX....",
+          "...XXXIXX...",
+          "..XSXXXXXX..",
+          ".XIXXXXXXXX.",
+          "XXXXXXXXXSXX"
+        ],
+        [
+          ".....XX.....",
+          "....XXXX....",
+          "...XXXXXX...",
+          "..XXIXXXXX..",
+          ".XXXXSXXXXX.",
+          "XXXXXXXXIXXX"
+        ],
+        [
+          "....XX....",
+          "...XXXX...",
+          "..XXIXXX..",
+          ".XXXXXXXX.",
+          "XXXXXXIXXX"
+        ],
+        [
+          "...XX...",
+          "..XXXX..",
+          ".XXXIXX.",
+          "XXXXXXXX"
+        ],
+        [
+          "..X..",
+          ".XXX.",
+          "XXX.."
+        ]
+      ]
+    },
+    {
+      "name": "终焉迷城",
+      "types": 18,
+      "time_limit": 240,
+      "slot_count": 5,
+      "star_times": [
+        108,
+        168,
+        240
+      ],
+      "layers": [
+        [
+          "XXXXSXXXXIXX",
+          "XX........XX",
+          "XX........XX",
+          "XX........XX",
+          "XX........XX",
+          "XXXIXXXXSXXX"
+        ],
+        [
+          "XXXXXXXXXXX",
+          "XXXXXIXXXXX",
+          "XXXSXXXXXXX",
+          "XXXXXXXXSXX",
+          "XXIXXXXXXXX",
+          "XXXXXXXXXXX"
+        ],
+        [
+          "....XX....",
+          "..XIXXXX..",
+          "XXXXXSXXXX",
+          "..XXXXXI..",
+          "....XX...."
+        ],
+        [
+          "..XXXX..",
+          "XXXXIXXX",
+          "XXIXXXXX",
+          "..XXXX.."
         ],
         [
           "XXXX",

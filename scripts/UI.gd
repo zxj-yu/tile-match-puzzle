@@ -23,24 +23,19 @@ var button_mode = "retry"
 func _ready():
 	add_button.pressed.connect(_on_add_button_pressed)
 	result_button.pressed.connect(_on_result_button_pressed)
-
 	title_screen.start_pressed.connect(_on_title_start)
 	title_screen.endless_pressed.connect(_on_title_endless)
-
 	level_select.level_chosen.connect(_on_level_chosen)
 	$"../LevelSelect/Panel/BackButton".pressed.connect(_on_level_select_back)
-
 	# 暂停
 	pause_button.pressed.connect(_on_pause_pressed)
 	$PausePanel/ResumeButton.pressed.connect(_on_resume_pressed)
 	$PausePanel/RetryButton.pressed.connect(_on_pause_retry)
 	$PausePanel/HomeButton.pressed.connect(_on_pause_home)
-
 	# 道具
 	slot_skill_button.pressed.connect(func(): grid_manager.use_skill_slot())
 	time_skill_button.pressed.connect(func(): grid_manager.use_skill_time())
 	shuffle_skill_button.pressed.connect(func(): grid_manager.use_skill_shuffle())
-
 	grid_manager.progress_changed.connect(_on_progress_changed)
 	grid_manager.level_changed.connect(_on_level_changed)
 	grid_manager.level_won_stars.connect(_on_level_won_stars)
@@ -50,7 +45,6 @@ func _ready():
 	grid_manager.time_updated.connect(_on_time_updated)
 	grid_manager.score_updated.connect(_on_score_updated)
 	grid_manager.skills_updated.connect(_on_skills_updated)
-
 	result_panel.visible = false
 	start_menu.visible = false
 	pause_panel.visible = false
@@ -59,6 +53,35 @@ func _ready():
 	level_select.hide_menu()
 	title_screen.show_screen()
 	time_label.text = ""
+	# 布局重排 + 充气按钮样式
+	_setup_ui_layout()
+	# 背景音乐
+	SoundManager.play_bgm()
+
+func _setup_ui_layout():
+	# ===== 布局重排 =====
+	# 暂停 & 重试：右侧同一列
+	pause_button.position = Vector2(1000, 130)
+	pause_button.size = Vector2(120, 52)
+	add_button.position = Vector2(1000, 195)
+	add_button.size = Vector2(120, 52)
+
+	# 道具栏：收纳格正下方
+	skill_bar.position = Vector2(60, 706)
+	skill_bar.size = Vector2(620, 56)
+
+	# ===== 充气按钮样式 =====
+	ButtonStyler.style(pause_button, Color(1.0, 0.62, 0.35), 20)
+	ButtonStyler.style(add_button, Color(1.0, 0.62, 0.35), 20)
+	ButtonStyler.style(slot_skill_button, Color(0.45, 0.72, 0.95), 18)
+	ButtonStyler.style(time_skill_button, Color(0.55, 0.8, 0.5), 18)
+	ButtonStyler.style(shuffle_skill_button, Color(0.85, 0.55, 0.8), 18)
+	ButtonStyler.style(result_button, Color(1.0, 0.62, 0.35), 22)
+	ButtonStyler.style($PausePanel/ResumeButton, Color(0.55, 0.8, 0.5), 20)
+	ButtonStyler.style($PausePanel/RetryButton, Color(1.0, 0.62, 0.35), 20)
+	ButtonStyler.style($PausePanel/HomeButton, Color(0.85, 0.55, 0.8), 20)
+	ButtonStyler.style($"../TitleScreen/Panel/StartButton", Color(1.0, 0.62, 0.35), 28)
+	ButtonStyler.style($"../TitleScreen/Panel/EndlessButton", Color(0.45, 0.72, 0.95), 22)
 
 # ===== 首页 =====
 func _on_title_start():

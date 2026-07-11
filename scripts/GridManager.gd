@@ -109,7 +109,8 @@ func _reset_skills():
 
 func load_level(index: int):
 	current_level = clamp(index, 0, campaign_levels.size() - 1)
-	slot_count = BASE_SLOT_COUNT
+	var cfg_pre = campaign_levels[clamp(index, 0, campaign_levels.size() - 1)]
+	slot_count = int(cfg_pre.get("slot_count", BASE_SLOT_COUNT))
 	_clear_board()
 	var cfg = campaign_levels[current_level]
 	_generate_board(cfg)
@@ -147,10 +148,10 @@ func _load_endless_wave():
 	_reset_skills()
 
 	var wave = endless_wave
-	var type_count = min(4 + int(wave / 3), 15)
-	var layer_count = min(2 + int(wave / 3), 4)
-	var base_w = min(4 + int(wave / 2), 9)
-	var base_h = min(3 + int(wave / 3), 6)
+	var type_count = min(4 + int(wave / 2), 18)
+	var layer_count = min(2 + int(wave / 3), 3)
+	var base_w = min(6 + wave, 12)
+	var base_h = min(4 + int(wave / 2), 6)
 
 	var layers = []
 	for layer in range(layer_count):
@@ -188,25 +189,38 @@ func _generate_board(cfg):
 		for row_i in range(rows_arr.size()):
 			var line = rows_arr[row_i]
 			for col_i in range(line.length()):
-				if line[col_i] == "X":
-					positions.append({ "layer": layer_i, "col": col_i, "row": row_i })
+				var ch = line[col_i]
+				if ch == "X" or ch == "I" or ch == "S":
+					positions.append({
+						"layer": layer_i, "col": col_i, "row": row_i,
+						"kind": ch
+					})
 
-	var total = positions.size()
-	while total % 3 != 0:
-		positions.pop_back()
-		total = positions.size()
+	# 可玩方块（X+I）数量校验，石头不算
+	var playable = []
+	var stones = []
+	for p in positions:
+		if p["kind"] == "S":
+			stones.append(p)
+		else:
+			playable.append(p)
+	while playable.size() % 3 != 0:
+		playable.pop_back()
 
 	var pool = []
-	for i in range(int(total / 3)):
+	for i in range(int(playable.size() / 3)):
 		var t = randi() % type_count
 		for j in 3:
 			pool.append(t)
 	pool.shuffle()
 
-	for p in positions:
+	# 生成可玩方块
+	for p in playable:
 		var item = item_scene.instantiate()
 		add_child(item)
 		item.set_type(pool.pop_back())
+		if p["kind"] == "I":
+			item.set_kind(item.TileKind.FROZEN)
 		item.position = _tile_world_pos(p)
 		item.z_index = p["layer"]
 		item.scale = Vector2.ZERO
@@ -217,9 +231,26 @@ func _generate_board(cfg):
 		item.clicked.connect(_on_tile_clicked.bind(tile))
 		tiles.append(tile)
 
-	_update_cover_states()
-	emit_signal("progress_changed", tiles.size())
+	# 生成石头（不进 pool，不可点击拿取，但参与遮挡）
+	for p in stones:
+		var item = item_scene.instantiate()
+		add_child(item)
+		item.set_kind(item.TileKind.STONE)
+		item.position = _tile_world_pos(p)
+		item.z_index = p["layer"]
+		var tile = { "node": item, "layer": p["layer"], "col": p["col"], "row": p["row"] }
+		item.clicked.connect(_on_tile_clicked.bind(tile))
+		tiles.append(tile)
 
+	_update_cover_states()
+	emit_signal("progress_changed", _count_playable())
+
+func _count_playable() -> int:
+	var c = 0
+	for t in tiles:
+		if not t["node"].is_stone():
+			c += 1
+	return c
 func _tile_world_pos(p) -> Vector2:
 	var offset = Vector2.ZERO
 	if int(p["layer"]) % 2 == 1:
@@ -240,12 +271,33 @@ func _is_covered(tile) -> bool:
 
 func _update_cover_states():
 	for tile in tiles:
-		tile["node"].set_covered(_is_covered(tile))
+		var node = tile["node"]
+		var was_covered = node.is_covered_state
+		var now_covered = _is_covered(tile)
+		if was_covered and not now_covered:
+			# 刚被翻开：翻牌动画
+			node.set_covered(false)
+			node.scale = Vector2(0.1, 1.0)
+			var tw = create_tween()
+			tw.tween_property(node, "scale", Vector2.ONE, 0.2)\
+				.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		else:
+			node.set_covered(now_covered)
 
 func _on_tile_clicked(tile):
 	if game_over or click_locked or is_paused:
 		return
 	if _is_covered(tile):
+		return
+	var node = tile["node"]
+	# 石头永远不可拿
+	if node.is_stone():
+		return
+	# 冰冻块：第一次点击是解冻，不进槽
+	if node.hit_frozen():
+		SoundManager.play("click")
+		click_locked = true
+		_unlock_next_frame()
 		return
 	if slots.size() >= slot_count:
 		return
@@ -257,8 +309,8 @@ func _on_tile_clicked(tile):
 
 	tiles.erase(tile)
 	_update_cover_states()
-	emit_signal("progress_changed", tiles.size())
-	_add_to_slots(tile["node"])
+	emit_signal("progress_changed", _count_playable())
+	_add_to_slots(node)
 
 func _unlock_next_frame():
 	await get_tree().process_frame
@@ -380,12 +432,17 @@ func use_skill_shuffle():
 		return
 	skill_shuffle_left -= 1
 	SoundManager.play("skill")
-	var type_list = []
+	# 只打乱可玩方块，跳过石头
+	var playable_tiles = []
 	for tile in tiles:
+		if not tile["node"].is_stone():
+			playable_tiles.append(tile)
+	var type_list = []
+	for tile in playable_tiles:
 		type_list.append(tile["node"].type_id)
 	type_list.shuffle()
-	for i in range(tiles.size()):
-		tiles[i]["node"].set_type(type_list[i])
+	for i in range(playable_tiles.size()):
+		playable_tiles[i]["node"].set_type(type_list[i])
 	emit_signal("skills_updated", skill_slot_left, skill_time_left_count, skill_shuffle_left)
 
 # ===== 暂停 =====
@@ -408,7 +465,7 @@ func quit_to_title():
 func _check_win():
 	if game_over:
 		return
-	if not tiles.is_empty():
+	if _count_playable() > 0:
 		return
 	if not slots.is_empty():
 		return

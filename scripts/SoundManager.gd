@@ -10,6 +10,7 @@ var sfx_enabled = true
 var bgm_enabled = true
 
 func _ready():
+	# 1. 加载音效
 	_load_sound("click", "res://resources/sounds/click.ogg")
 	_load_sound("match", "res://resources/sounds/match.ogg")
 	_load_sound("combo", "res://resources/sounds/combo.ogg")
@@ -18,15 +19,17 @@ func _ready():
 	_load_sound("lose", "res://resources/sounds/lose.ogg")
 	_load_sound("button", "res://resources/sounds/button.ogg")
 
+	# 2. 创建音效播放器池
 	for i in SFX_POOL_SIZE:
 		var p = AudioStreamPlayer.new()
 		add_child(p)
 		sfx_players.append(p)
 
+	# 3. 先创建 BGM 播放器，再加载 BGM（顺序不能反！）
 	bgm_player = AudioStreamPlayer.new()
 	bgm_player.volume_db = -8.0
 	add_child(bgm_player)
-	_load_bgm("res://resources/sounds/bgm.ogg")
+	_load_bgm("res://resources/sounds/bgm.mp3")
 
 func _load_sound(name: String, path: String):
 	if ResourceLoader.exists(path):
@@ -35,9 +38,13 @@ func _load_sound(name: String, path: String):
 		print("音效文件缺失（已跳过）: ", path)
 
 func _load_bgm(path: String):
+	if bgm_player == null:
+		return
 	if ResourceLoader.exists(path):
 		var stream = load(path)
 		if stream is AudioStreamOggVorbis:
+			stream.loop = true
+		elif stream is AudioStreamMP3:
 			stream.loop = true
 		bgm_player.stream = stream
 	else:
@@ -54,7 +61,7 @@ func play(name: String):
 	p.play()
 
 func play_bgm():
-	if bgm_enabled and bgm_player.stream != null and not bgm_player.playing:
+	if bgm_enabled and bgm_player != null and bgm_player.stream != null and not bgm_player.playing:
 		bgm_player.play()
 
 func stop_bgm():
