@@ -402,7 +402,7 @@ func _award_score_with_effect(pos: Vector2):
 	var color = Color(1, 0.85, 0.2)
 	if combo_count >= 3:
 		color = Color(1, 0.4, 0.3)
-		text += "  连击x" + str(combo_count) + "!"
+		text += "  Combo x" + str(combo_count) + "!"
 	FloatingText.spawn(self, pos, text, color)
 
 # ===== 道具 =====

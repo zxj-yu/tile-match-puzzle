@@ -16,7 +16,7 @@ func build(total_levels: int):
 	# 顶部显示段位和总分
 	var rank = SaveManager.get_rank()
 	var score = SaveManager.data["total_score"]
-	rank_label.text = "段位：" + rank + "    总分：" + str(score)
+	rank_label.text = "Rank: " + rank + "    Total: " + str(score)
 
 	var unlocked = SaveManager.data["unlocked_level"]
 

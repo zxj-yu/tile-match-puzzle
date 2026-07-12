@@ -18,9 +18,9 @@ func refresh():
 	var unlocked = SaveManager.data["unlocked_level"]
 	var best_wave = SaveManager.data["endless_best"]
 	if unlocked == 0 and SaveManager.data["total_score"] == 0:
-		subtitle_label.text = "开始你的消除之旅"
+		subtitle_label.text = "Begin your matching journey"
 	else:
-		subtitle_label.text = "段位：" + rank + "    已解锁 " + str(int(unlocked) + 1) + " 关    无尽最高 " + str(int(best_wave)) + " 波"
+		subtitle_label.text = "Rank: " + rank + "    Level " + str(int(unlocked) + 1) + " unlocked    Endless best: Wave " + str(int(best_wave))
 
 func show_screen():
 	visible = true

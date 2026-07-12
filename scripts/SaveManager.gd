@@ -12,13 +12,13 @@ var data = {
 
 # 段位定义
 const RANKS = [
-	{ "name": "青铜", "min": 0 },
-	{ "name": "白银", "min": 3000 },
-	{ "name": "黄金", "min": 8000 },
-	{ "name": "铂金", "min": 18000 },
-	{ "name": "钻石", "min": 35000 },
-	{ "name": "大师", "min": 60000 },
-	{ "name": "王者", "min": 100000 },
+	{ "name": "Bronze", "min": 0 },
+	{ "name": "Silver", "min": 3000 },
+	{ "name": "Gold", "min": 8000 },
+	{ "name": "Platinum", "min": 18000 },
+	{ "name": "Diamond", "min": 35000 },
+	{ "name": "Master", "min": 60000 },
+	{ "name": "King", "min": 100000 },
 ]
 
 func _ready():

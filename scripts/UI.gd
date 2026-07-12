@@ -27,15 +27,16 @@ func _ready():
 	title_screen.endless_pressed.connect(_on_title_endless)
 	level_select.level_chosen.connect(_on_level_chosen)
 	$"../LevelSelect/Panel/BackButton".pressed.connect(_on_level_select_back)
-	# 暂停
+	# Pause
 	pause_button.pressed.connect(_on_pause_pressed)
 	$PausePanel/ResumeButton.pressed.connect(_on_resume_pressed)
 	$PausePanel/RetryButton.pressed.connect(_on_pause_retry)
 	$PausePanel/HomeButton.pressed.connect(_on_pause_home)
-	# 道具
+	# Power-ups
 	slot_skill_button.pressed.connect(func(): grid_manager.use_skill_slot())
 	time_skill_button.pressed.connect(func(): grid_manager.use_skill_time())
 	shuffle_skill_button.pressed.connect(func(): grid_manager.use_skill_shuffle())
+
 	grid_manager.progress_changed.connect(_on_progress_changed)
 	grid_manager.level_changed.connect(_on_level_changed)
 	grid_manager.level_won_stars.connect(_on_level_won_stars)
@@ -45,6 +46,7 @@ func _ready():
 	grid_manager.time_updated.connect(_on_time_updated)
 	grid_manager.score_updated.connect(_on_score_updated)
 	grid_manager.skills_updated.connect(_on_skills_updated)
+
 	result_panel.visible = false
 	start_menu.visible = false
 	pause_panel.visible = false
@@ -53,24 +55,21 @@ func _ready():
 	level_select.hide_menu()
 	title_screen.show_screen()
 	time_label.text = ""
-	# 布局重排 + 充气按钮样式
+	# Layout & candy-button styling
 	_setup_ui_layout()
-	# 背景音乐
+	# Background music
 	SoundManager.play_bgm()
 
 func _setup_ui_layout():
-	# ===== 布局重排 =====
-	# 暂停 & 重试：右侧同一列
+	# ===== Layout =====
 	pause_button.position = Vector2(1000, 130)
 	pause_button.size = Vector2(120, 52)
 	add_button.position = Vector2(1000, 195)
 	add_button.size = Vector2(120, 52)
-
-	# 道具栏：收纳格正下方
 	skill_bar.position = Vector2(60, 706)
 	skill_bar.size = Vector2(620, 56)
 
-	# ===== 充气按钮样式 =====
+	# ===== Candy-style buttons =====
 	ButtonStyler.style(pause_button, Color(1.0, 0.62, 0.35), 20)
 	ButtonStyler.style(add_button, Color(1.0, 0.62, 0.35), 20)
 	ButtonStyler.style(slot_skill_button, Color(0.45, 0.72, 0.95), 18)
@@ -83,8 +82,9 @@ func _setup_ui_layout():
 	ButtonStyler.style($"../TitleScreen/Panel/StartButton", Color(1.0, 0.62, 0.35), 28)
 	ButtonStyler.style($"../TitleScreen/Panel/EndlessButton", Color(0.45, 0.72, 0.95), 22)
 
-# ===== 首页 =====
+# ===== Title screen =====
 func _on_title_start():
+	SoundManager.play("button")
 	title_screen.hide_screen()
 	pause_button.visible = false
 	skill_bar.visible = false
@@ -92,19 +92,22 @@ func _on_title_start():
 	level_select.show_menu()
 
 func _on_title_endless():
+	SoundManager.play("button")
 	title_screen.hide_screen()
 	pause_button.visible = true
 	skill_bar.visible = true
 	grid_manager.start_endless()
 
-# ===== 关卡选择 =====
+# ===== Level select =====
 func _on_level_chosen(index: int):
+	SoundManager.play("button")
 	level_select.hide_menu()
 	pause_button.visible = true
 	skill_bar.visible = true
 	grid_manager.start_level(index)
 
 func _on_level_select_back():
+	SoundManager.play("button")
 	level_select.hide_menu()
 	pause_button.visible = false
 	skill_bar.visible = false
@@ -116,40 +119,46 @@ func _return_to_level_select():
 	level_select.build(grid_manager.campaign_levels.size())
 	level_select.show_menu()
 
-# ===== 暂停 =====
+# ===== Pause =====
 func _on_pause_pressed():
+	SoundManager.play("button")
 	grid_manager.pause_game()
 	pause_panel.visible = true
 
 func _on_resume_pressed():
+	SoundManager.play("button")
 	pause_panel.visible = false
 	grid_manager.resume_game()
 
 func _on_pause_retry():
+	SoundManager.play("button")
 	pause_panel.visible = false
 	grid_manager.retry_level()
 
 func _on_pause_home():
+	SoundManager.play("button")
 	pause_panel.visible = false
 	pause_button.visible = false
 	skill_bar.visible = false
 	grid_manager.quit_to_title()
 	title_screen.show_screen()
 
-# ===== 道具显示 =====
+# ===== Power-up display =====
 func _on_skills_updated(slot: int, time: int, shuffle: int):
-	slot_skill_button.text = "➕收纳格 x" + str(slot)
-	time_skill_button.text = "⏱+5秒 x" + str(time)
-	shuffle_skill_button.text = "🔀打乱 x" + str(shuffle)
+	slot_skill_button.text = "➕Slot x" + str(slot)
+	time_skill_button.text = "⏱+5s x" + str(time)
+	shuffle_skill_button.text = "🔀Shuffle x" + str(shuffle)
 	slot_skill_button.disabled = slot <= 0
 	time_skill_button.disabled = time <= 0
 	shuffle_skill_button.disabled = shuffle <= 0
 
-# ===== 游戏内按钮 =====
+# ===== In-game buttons =====
 func _on_add_button_pressed():
+	SoundManager.play("button")
 	grid_manager.retry_level()
 
 func _on_result_button_pressed():
+	SoundManager.play("button")
 	result_panel.visible = false
 	match button_mode:
 		"retry":
@@ -159,17 +168,17 @@ func _on_result_button_pressed():
 		"restart_all":
 			_return_to_level_select()
 
-# ===== 关卡事件 =====
+# ===== Level events =====
 func _on_level_changed(level_index: int):
 	result_panel.visible = false
-	add_button.text = "重试本关"
-	message_label.text = "点击最上层方块，凑齐3个相同的消除"
+	add_button.text = "Retry"
+	message_label.text = "Tap uncovered tiles — match 3 to clear!"
 
 func _on_progress_changed(remaining: int):
 	if grid_manager.mode == grid_manager.Mode.ENDLESS:
-		score_label.text = "剩余：" + str(remaining)
+		score_label.text = "Left: " + str(remaining)
 	else:
-		score_label.text = "第" + str(grid_manager.current_level + 1) + "关 | 剩余：" + str(remaining)
+		score_label.text = "Level " + str(grid_manager.current_level + 1) + " | Left: " + str(remaining)
 
 func _on_time_updated(seconds_left: float):
 	var s = int(ceil(seconds_left))
@@ -184,27 +193,27 @@ func _on_score_updated(current: int, combo: int):
 	var combo_str = ""
 	if combo >= 2:
 		var mult = min(1.0 + (combo - 1) * 0.5, 3.0)
-		combo_str = "  连击x" + str(combo) + " (×" + str(mult) + ")"
-	message_label.text = "本局 " + str(current) + " | 段位:" + rank + combo_str
+		combo_str = "  Combo x" + str(combo) + " (×" + str(mult) + ")"
+	message_label.text = "Score " + str(current) + " | Rank: " + rank + combo_str
 
 func _on_wave_changed(wave: int):
 	time_label.text = ""
-	score_label.text = "无尽模式 | 第 " + str(wave) + " 波"
+	score_label.text = "Endless | Wave " + str(wave)
 
-# ===== 结算 =====
+# ===== Results =====
 func _on_level_won_stars(level_index: int, stars: int, time_used: float):
 	button_mode = "next"
 	var star_str = "⭐".repeat(stars) + "☆".repeat(3 - stars)
-	result_label.text = star_str + "\n用时 " + str(int(time_used)) + " 秒\n段位:" + SaveManager.get_rank()
-	result_button.text = "返回关卡选择"
+	result_label.text = star_str + "\nTime: " + str(int(time_used)) + "s\nRank: " + SaveManager.get_rank()
+	result_button.text = "Level Select"
 	pause_button.visible = false
 	skill_bar.visible = false
 	_show_result()
 
 func _on_all_complete():
 	button_mode = "restart_all"
-	result_label.text = "🏆 全部通关！\n段位:" + SaveManager.get_rank()
-	result_button.text = "返回关卡选择"
+	result_label.text = "All levels complete!\nRank: " + SaveManager.get_rank()
+	result_button.text = "Level Select"
 	pause_button.visible = false
 	skill_bar.visible = false
 	_show_result()
@@ -212,10 +221,10 @@ func _on_all_complete():
 func _on_game_lost():
 	button_mode = "retry"
 	if grid_manager.mode == grid_manager.Mode.ENDLESS:
-		result_label.text = "💀 撑到第 " + str(grid_manager.endless_wave + 1) + " 波！"
+		result_label.text = "Reached Wave " + str(grid_manager.endless_wave + 1) + "!"
 	else:
-		result_label.text = "💀 时间到 / 收集槽满了！"
-	result_button.text = "再来一次"
+		result_label.text = "Time's up / Tray full!"
+	result_button.text = "Try Again"
 	_show_result()
 
 func _show_result():
