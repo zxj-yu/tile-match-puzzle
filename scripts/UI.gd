@@ -17,6 +17,8 @@ extends CanvasLayer
 @onready var slot_skill_button = $SkillBar/SlotSkillButton
 @onready var time_skill_button = $SkillBar/TimeSkillButton
 @onready var shuffle_skill_button = $SkillBar/ShuffleSkillButton
+# 撤销按钮在代码里动态创建并加入 SkillBar（HBoxContainer 会自动排布）
+var undo_skill_button: Button
 
 var button_mode = "retry"
 
@@ -36,6 +38,10 @@ func _ready():
 	slot_skill_button.pressed.connect(func(): grid_manager.use_skill_slot())
 	time_skill_button.pressed.connect(func(): grid_manager.use_skill_time())
 	shuffle_skill_button.pressed.connect(func(): grid_manager.use_skill_shuffle())
+	# 动态创建撤销按钮，加入 SkillBar 末尾
+	undo_skill_button = Button.new()
+	skill_bar.add_child(undo_skill_button)
+	undo_skill_button.pressed.connect(func(): grid_manager.use_skill_undo())
 
 	grid_manager.progress_changed.connect(_on_progress_changed)
 	grid_manager.level_changed.connect(_on_level_changed)
@@ -75,6 +81,7 @@ func _setup_ui_layout():
 	ButtonStyler.style(slot_skill_button, Color(0.45, 0.72, 0.95), 18)
 	ButtonStyler.style(time_skill_button, Color(0.55, 0.8, 0.5), 18)
 	ButtonStyler.style(shuffle_skill_button, Color(0.85, 0.55, 0.8), 18)
+	ButtonStyler.style(undo_skill_button, Color(0.95, 0.75, 0.35), 18)
 	ButtonStyler.style(result_button, Color(1.0, 0.62, 0.35), 22)
 	ButtonStyler.style($PausePanel/ResumeButton, Color(0.55, 0.8, 0.5), 20)
 	ButtonStyler.style($PausePanel/RetryButton, Color(1.0, 0.62, 0.35), 20)
@@ -144,13 +151,15 @@ func _on_pause_home():
 	title_screen.show_screen()
 
 # ===== Power-up display =====
-func _on_skills_updated(slot: int, time: int, shuffle: int):
+func _on_skills_updated(slot: int, time: int, shuffle: int, undo: int):
 	slot_skill_button.text = "➕Slot x" + str(slot)
 	time_skill_button.text = "⏱+5s x" + str(time)
 	shuffle_skill_button.text = "🔀Shuffle x" + str(shuffle)
+	undo_skill_button.text = "↩Undo x" + str(undo)
 	slot_skill_button.disabled = slot <= 0
 	time_skill_button.disabled = time <= 0
 	shuffle_skill_button.disabled = shuffle <= 0
+	undo_skill_button.disabled = undo <= 0
 
 # ===== In-game buttons =====
 func _on_add_button_pressed():

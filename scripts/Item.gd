@@ -36,6 +36,7 @@ const TYPES = [
 var is_covered_state: bool = false
 var back_sprite: Sprite2D = null   # 卡背贴图
 var status_label: Label = null     # ❄/🪨 状态角标
+var _hint_tween: Tween = null      # 提示闪烁的循环补间
 
 func _ready():
 	input_event.connect(_on_input_event)
@@ -134,6 +135,24 @@ func _refresh_visuals():
 			bg.color = Color(1, 1, 1)
 			if status_label: status_label.visible = false
 		modulate = Color.WHITE
+
+# ===== 提示闪烁：呼吸式放大 + 微微高亮，循环直到玩家操作 =====
+func flash_hint():
+	stop_flash()
+	_hint_tween = create_tween().set_loops()
+	_hint_tween.tween_property(self, "scale", Vector2(1.14, 1.14), 0.4)\
+		.set_trans(Tween.TRANS_SINE)
+	_hint_tween.parallel().tween_property(self, "modulate", Color(1.0, 1.0, 0.55), 0.4)
+	_hint_tween.tween_property(self, "scale", Vector2.ONE, 0.4)\
+		.set_trans(Tween.TRANS_SINE)
+	_hint_tween.parallel().tween_property(self, "modulate", Color.WHITE, 0.4)
+
+func stop_flash():
+	if _hint_tween and _hint_tween.is_valid():
+		_hint_tween.kill()
+	_hint_tween = null
+	scale = Vector2.ONE
+	modulate = Color.WHITE
 
 func _on_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton:

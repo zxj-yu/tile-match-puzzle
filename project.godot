@@ -26,6 +26,10 @@ window/size/viewport_height=780
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+
 [gui]
 
 theme/custom_font="uid://cufs6a7vx6hq"

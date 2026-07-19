@@ -23,6 +23,12 @@ var is_paused = false
 var bg_nodes = []
 var click_locked = false
 
+# 挂机提示：闲置超过 HINT_IDLE_TIME 秒就闪烁可消除的方块
+const HINT_IDLE_TIME := 4.0
+var idle_time := 0.0
+var hint_active := false
+var hint_nodes := []
+
 var time_left: float = 0.0
 var timer_running: bool = false
 var current_time_limit: float = 0.0
@@ -35,6 +41,9 @@ const COMBO_WINDOW = 2.0
 var skill_slot_left: int = 3
 var skill_time_left_count: int = 3
 var skill_shuffle_left: int = 3
+var skill_undo_left: int = 3
+# 撤销栈：存被收进托盘的方块字典（与 tiles 里同一个引用），可原样放回棋盘
+var undo_stack = []
 
 signal level_won(level_index: int)
 signal level_won_stars(level_index: int, stars: int, time_used: float)
@@ -45,7 +54,7 @@ signal level_changed(level_index: int)
 signal wave_changed(wave: int)
 signal time_updated(seconds_left: float)
 signal score_updated(current: int, combo: int)
-signal skills_updated(slot: int, time: int, shuffle: int)
+signal skills_updated(slot: int, time: int, shuffle: int, undo: int)
 
 func _ready():
 	_load_levels_from_json()
@@ -55,6 +64,14 @@ func _process(delta):
 		combo_timer -= delta
 		if combo_timer <= 0:
 			combo_count = 0
+
+	# 挂机提示：棋盘处于可玩状态时累计闲置时间（战役/无尽都适用）
+	if not game_over and not is_paused and tiles.size() > 0:
+		idle_time += delta
+		if idle_time >= HINT_IDLE_TIME and not hint_active:
+			_show_hint()
+	else:
+		_reset_idle()
 
 	if not timer_running or game_over or is_paused:
 		return
@@ -105,7 +122,9 @@ func _reset_skills():
 	skill_slot_left = 3
 	skill_time_left_count = 3
 	skill_shuffle_left = 3
-	emit_signal("skills_updated", skill_slot_left, skill_time_left_count, skill_shuffle_left)
+	skill_undo_left = 3
+	undo_stack = []
+	emit_signal("skills_updated", skill_slot_left, skill_time_left_count, skill_shuffle_left, skill_undo_left)
 
 func load_level(index: int):
 	current_level = clamp(index, 0, campaign_levels.size() - 1)
@@ -178,6 +197,11 @@ func _clear_board():
 	for bg in bg_nodes:
 		bg.queue_free()
 	bg_nodes = []
+	undo_stack = []
+	# 重置提示状态（节点即将释放，不再引用）
+	hint_nodes = []
+	hint_active = false
+	idle_time = 0.0
 
 func _generate_board(cfg):
 	var layers = cfg["layers"]
@@ -190,7 +214,10 @@ func _generate_board(cfg):
 			var line = rows_arr[row_i]
 			for col_i in range(line.length()):
 				var ch = line[col_i]
-				if ch == "X" or ch == "I" or ch == "S":
+				# 石头功能已取消：布局里的 "S" 一律当作普通方块，避免永久遮挡卡死
+				if ch == "S":
+					ch = "X"
+				if ch == "X" or ch == "I":
 					positions.append({
 						"layer": layer_i, "col": col_i, "row": row_i,
 						"kind": ch
@@ -289,6 +316,7 @@ func _on_tile_clicked(tile):
 		return
 	if _is_covered(tile):
 		return
+	_reset_idle()  # 有操作，重置挂机计时并清掉提示
 	var node = tile["node"]
 	# 石头永远不可拿
 	if node.is_stone():
@@ -307,6 +335,8 @@ func _on_tile_clicked(tile):
 
 	SoundManager.play("click")
 
+	# 记录这次取牌，供撤销道具回退（存的是同一个 tile 字典引用）
+	undo_stack.append(tile)
 	tiles.erase(tile)
 	_update_cover_states()
 	emit_signal("progress_changed", _count_playable())
@@ -372,6 +402,9 @@ func _check_triples() -> bool:
 			var center = trio[1].position
 			var burst_color = trio[1].get_main_color()
 
+			# 三消发生：被消掉的方块已释放，撤销栈失效，清空
+			undo_stack = []
+
 			for it in trio:
 				slots.erase(it)
 				BurstParticle.spawn(self, it.position, burst_color)
@@ -409,27 +442,30 @@ func _award_score_with_effect(pos: Vector2):
 func use_skill_slot():
 	if skill_slot_left <= 0 or game_over or is_paused:
 		return
+	_reset_idle()
 	skill_slot_left -= 1
 	SoundManager.play("skill")
 	slot_count += 1
 	_draw_slot_background()
 	_relayout_slots()
-	emit_signal("skills_updated", skill_slot_left, skill_time_left_count, skill_shuffle_left)
+	emit_signal("skills_updated", skill_slot_left, skill_time_left_count, skill_shuffle_left, skill_undo_left)
 
 func use_skill_time():
 	if skill_time_left_count <= 0 or game_over or is_paused:
 		return
 	if mode != Mode.CAMPAIGN:
 		return
+	_reset_idle()
 	skill_time_left_count -= 1
 	SoundManager.play("skill")
 	time_left += 5.0
 	emit_signal("time_updated", time_left)
-	emit_signal("skills_updated", skill_slot_left, skill_time_left_count, skill_shuffle_left)
+	emit_signal("skills_updated", skill_slot_left, skill_time_left_count, skill_shuffle_left, skill_undo_left)
 
 func use_skill_shuffle():
 	if skill_shuffle_left <= 0 or game_over or is_paused:
 		return
+	_reset_idle()
 	skill_shuffle_left -= 1
 	SoundManager.play("skill")
 	# 只打乱可玩方块，跳过石头
@@ -443,7 +479,89 @@ func use_skill_shuffle():
 	type_list.shuffle()
 	for i in range(playable_tiles.size()):
 		playable_tiles[i]["node"].set_type(type_list[i])
-	emit_signal("skills_updated", skill_slot_left, skill_time_left_count, skill_shuffle_left)
+	emit_signal("skills_updated", skill_slot_left, skill_time_left_count, skill_shuffle_left, skill_undo_left)
+
+func use_skill_undo():
+	if skill_undo_left <= 0 or game_over or is_paused:
+		return
+	if undo_stack.is_empty():
+		return
+	var tile = undo_stack.pop_back()
+	var node = tile["node"]
+	# 只有还留在托盘里的方块才能撤销（已被三消掉的不行）
+	if not slots.has(node):
+		return
+	_reset_idle()
+	skill_undo_left -= 1
+	SoundManager.play("skill")
+	# 从托盘取出，原样放回棋盘的原位置和层级
+	slots.erase(node)
+	node.z_index = tile["layer"]
+	node.position = _tile_world_pos(tile)
+	# 用回原来的 tile 字典引用，原有的 clicked 绑定依然有效，无需重连
+	tiles.append(tile)
+	_relayout_slots()
+	_update_cover_states()
+	emit_signal("progress_changed", _count_playable())
+	emit_signal("skills_updated", skill_slot_left, skill_time_left_count, skill_shuffle_left, skill_undo_left)
+
+# ===== 挂机提示 =====
+func _reset_idle():
+	idle_time = 0.0
+	if hint_active:
+		_clear_hint()
+
+func _clear_hint():
+	for n in hint_nodes:
+		if is_instance_valid(n):
+			n.stop_flash()
+	hint_nodes = []
+	hint_active = false
+
+# 找出最值得提示的一组同类方块（纯逻辑，便于测试）
+func _find_hint_tiles() -> Array:
+	# 统计每种未遮挡（可点）方块
+	var by_type := {}
+	for tile in tiles:
+		if _is_covered(tile):
+			continue
+		var node = tile["node"]
+		if not by_type.has(node.type_id):
+			by_type[node.type_id] = []
+		by_type[node.type_id].append(node)
+	# 统计托盘里已有的类型，优先提示“差一步就能消”的
+	var tray := {}
+	for it in slots:
+		tray[it.type_id] = tray.get(it.type_id, 0) + 1
+
+	var best := []
+	var best_need := 99
+	for tid in by_type.keys():
+		var avail = by_type[tid].size()
+		var have = int(tray.get(tid, 0))
+		if have + avail >= 3:
+			var need = max(1, 3 - have)     # 还需要从棋盘拿几张
+			var take = min(need, avail)
+			if take > 0 and need < best_need:
+				best_need = need
+				best = by_type[tid].slice(0, take)
+	# 退路：没有能立刻凑成三消的，就高亮同类最多的一组（>=2）引导玩家往这凑
+	if best.is_empty():
+		var best_count := 1
+		for tid in by_type.keys():
+			if by_type[tid].size() > best_count:
+				best_count = by_type[tid].size()
+				best = by_type[tid].slice(0, min(3, by_type[tid].size()))
+	return best
+
+func _show_hint():
+	var nodes = _find_hint_tiles()
+	if nodes.is_empty():
+		return
+	hint_nodes = nodes
+	hint_active = true
+	for n in nodes:
+		n.flash_hint()
 
 # ===== 暂停 =====
 func pause_game():
@@ -452,6 +570,7 @@ func pause_game():
 
 func resume_game():
 	is_paused = false
+	_reset_idle()  # 刚恢复不要立刻弹提示
 	if mode == Mode.CAMPAIGN and not game_over:
 		timer_running = true
 

@@ -72,7 +72,7 @@ offset_top = 20.0
 offset_right = 210.0
 offset_bottom = 660.0
 theme_override_colors/font_color = Color(0.34901962, 0.2784314, 0.22745098, 1)
-text = "点击两个相同物品合成"
+text = "Tap two identical items to merge them"
 
 [node name="ResultPanel" type="Panel" parent="UI" unique_id=472487970]
 offset_left = 325.0
@@ -135,7 +135,7 @@ offset_top = 30.0
 offset_right = 200.0
 offset_bottom = 70.0
 theme_override_font_sizes/font_size = 22
-text = "已暂停"
+text = "Paused"
 
 [node name="ResumeButton" type="Button" parent="UI/PausePanel" unique_id=898474356]
 layout_mode = 0
@@ -144,7 +144,7 @@ offset_top = 90.0
 offset_right = 250.0
 offset_bottom = 140.0
 theme_override_font_sizes/font_size = 20
-text = "继续"
+text = "Continue"
 
 [node name="RetryButton" type="Button" parent="UI/PausePanel" unique_id=1807068558]
 layout_mode = 0
@@ -153,7 +153,7 @@ offset_top = 155.0
 offset_right = 250.0
 offset_bottom = 205.0
 theme_override_font_sizes/font_size = 20
-text = "重试本关"
+text = "Retry"
 
 [node name="HomeButton" type="Button" parent="UI/PausePanel" unique_id=628297765]
 layout_mode = 0
@@ -162,7 +162,7 @@ offset_top = 220.0
 offset_right = 250.0
 offset_bottom = 270.0
 theme_override_font_sizes/font_size = 20
-text = "返回主页"
+text = "Back"
 
 [node name="SkillBar" type="HBoxContainer" parent="UI" unique_id=1842885535]
 offset_right = 40.0
@@ -184,7 +184,7 @@ offset_right = 1120.0
 offset_bottom = 250.0
 theme_override_colors/font_color = Color(0.95916754, 0.8289197, 0.9341124, 1)
 theme_override_font_sizes/font_size = 22
-text = "⏸ 暂停"
+text = "Pause"
 
 [node name="MergeManager" type="Node" parent="." unique_id=1147835128]
 
@@ -262,7 +262,7 @@ offset_top = 400.0
 offset_right = 726.0
 offset_bottom = 480.0
 theme_override_font_sizes/font_size = 32
-text = "开始游戏"
+text = "Start Game"
 
 [node name="EndlessButton" type="Button" parent="TitleScreen/Panel" unique_id=1160558284]
 layout_mode = 0
@@ -270,4 +270,4 @@ offset_left = 426.0
 offset_top = 500.0
 offset_right = 726.0
 offset_bottom = 560.0
-text = "无尽模式"
+text = "Endless Mode"
