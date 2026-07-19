@@ -68,6 +68,30 @@ func record_level_clear(level_index: int, stars: int):
 func get_level_stars(level_index: int) -> int:
 	return data["level_stars"].get(str(level_index), 0)
 
+# ===== 关卡地图：顺序解锁 + 星星门槛 =====
+func total_stars() -> int:
+	var t = 0
+	for k in data["level_stars"].keys():
+		t += int(data["level_stars"][k])
+	return t
+
+const SECTION_SIZE = 5
+# 每 5 关一段，进入该段所需的累计星数门槛
+const STAR_GATES = [0, 6, 15, 27, 42, 60]
+
+func star_gate_for(index: int) -> int:
+	var section = int(index / SECTION_SIZE)
+	if section < STAR_GATES.size():
+		return STAR_GATES[section]
+	# 超出预设段落时线性外推
+	return STAR_GATES[STAR_GATES.size() - 1] + (section - STAR_GATES.size() + 1) * 20
+
+# 关卡是否可玩：既要顺序解锁到位，又要累计星数达到门槛
+func is_level_unlocked(index: int) -> bool:
+	if index > int(data["unlocked_level"]):
+		return false
+	return total_stars() >= star_gate_for(index)
+
 # ===== 无尽 =====
 func record_endless(wave: int):
 	if wave > data["endless_best"]:

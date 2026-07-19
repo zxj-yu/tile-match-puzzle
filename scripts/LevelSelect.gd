@@ -13,10 +13,10 @@ func build(total_levels: int):
 	for c in grid_container.get_children():
 		c.queue_free()
 
-	# 顶部显示段位和总分
+	# 顶部显示段位、总分、累计星数
 	var rank = SaveManager.get_rank()
 	var score = SaveManager.data["total_score"]
-	rank_label.text = "Rank: " + rank + "    Total: " + str(score)
+	rank_label.text = "Rank: %s    Total: %d    ★ %d" % [rank, score, SaveManager.total_stars()]
 
 	var unlocked = SaveManager.data["unlocked_level"]
 
@@ -26,7 +26,7 @@ func build(total_levels: int):
 
 		var stars = SaveManager.get_level_stars(i)
 
-		if i <= unlocked:
+		if SaveManager.is_level_unlocked(i):
 			# 已解锁：显示关号 + 星级
 			var star_str = ""
 			for s in range(3):
@@ -36,8 +36,13 @@ func build(total_levels: int):
 			var idx = i
 			btn.pressed.connect(func(): emit_signal("level_chosen", idx))
 			_style_button(btn, false)
+		elif i <= unlocked:
+			# 顺序到位，但累计星数不够：显示所需星数门槛
+			btn.text = "%d\n🔒 %d★" % [i + 1, SaveManager.star_gate_for(i)]
+			btn.disabled = true
+			_style_button(btn, true)
 		else:
-			# 锁住
+			# 尚未按顺序解锁
 			btn.text = str(i + 1) + "\n🔒"
 			btn.disabled = true
 			_style_button(btn, true)

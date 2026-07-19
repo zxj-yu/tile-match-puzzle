@@ -54,3 +54,25 @@ func test_rogue_records_best_stage_and_score_independently():
 	SaveManager.record_rogue(5, 100)   # 层数更高、分数更低
 	assert_eq(int(SaveManager.data["rogue_best_stage"]), 5, "更高层应更新")
 	assert_eq(int(SaveManager.data["rogue_best_score"]), 999, "更低分不应覆盖最高分")
+
+# ===== 关卡地图：累计星数 + 门槛解锁 =====
+func test_total_stars_sums_level_stars():
+	SaveManager.data["level_stars"] = { "0": 3, "1": 2, "2": 1 }
+	assert_eq(SaveManager.total_stars(), 6, "累计星数应为各关之和")
+
+func test_star_gate_thresholds():
+	assert_eq(SaveManager.star_gate_for(0), 0, "第一段(1-5关)免门槛")
+	assert_eq(SaveManager.star_gate_for(5), 6, "第二段(第6关)门槛 6 星")
+	assert_eq(SaveManager.star_gate_for(10), 15, "第三段门槛 15 星")
+
+func test_is_level_unlocked_respects_star_gate():
+	SaveManager.data["unlocked_level"] = 9        # 顺序上第6-10关都到位
+	SaveManager.data["level_stars"] = {}          # 0 星
+	assert_false(SaveManager.is_level_unlocked(5), "第6关需6星，0星时应锁住")
+	SaveManager.data["level_stars"] = { "0": 3, "1": 3 }   # 6 星
+	assert_true(SaveManager.is_level_unlocked(5), "凑够6星后第6关应解锁")
+
+func test_is_level_unlocked_respects_sequence():
+	SaveManager.data["unlocked_level"] = 2        # 顺序只到第3关
+	SaveManager.data["level_stars"] = { "0": 3, "1": 3, "2": 3, "3": 3 }  # 12星够门槛
+	assert_false(SaveManager.is_level_unlocked(5), "顺序没到，即使星够也应锁住")
