@@ -1,7 +1,11 @@
 extends Node2D
 
-enum Mode { CAMPAIGN, ENDLESS }
+enum Mode { CAMPAIGN, ENDLESS, DAILY }
 var mode = Mode.CAMPAIGN
+
+# 战役和每日都是限时模式，无尽不限时
+func _is_timed() -> bool:
+	return mode == Mode.CAMPAIGN or mode == Mode.DAILY
 
 const CELL_SIZE = 76
 const GRID_ORIGIN = Vector2(60, 130)
@@ -55,6 +59,7 @@ signal wave_changed(wave: int)
 signal time_updated(seconds_left: float)
 signal score_updated(current: int, combo: int)
 signal skills_updated(slot: int, time: int, shuffle: int, undo: int)
+signal daily_won(time_used: float)
 
 func _ready():
 	_load_levels_from_json()
@@ -75,7 +80,7 @@ func _process(delta):
 
 	if not timer_running or game_over or is_paused:
 		return
-	if mode != Mode.CAMPAIGN:
+	if not _is_timed():
 		return
 	time_left -= delta
 	emit_signal("time_updated", time_left)
@@ -118,6 +123,45 @@ func start_endless():
 	timer_running = false
 	_load_endless_wave()
 
+# ===== 每日挑战：用当天日期做种子，全员同一局 =====
+# 纯函数，便于测试：给定年月日返回确定的种子
+func daily_seed_for(year: int, month: int, day: int) -> int:
+	return year * 10000 + month * 100 + day
+
+func _daily_seed() -> int:
+	var d = Time.get_date_dict_from_system()
+	return daily_seed_for(int(d.year), int(d.month), int(d.day))
+
+# 固定形状（3 层递减矩形），保证有挖层深度；花色由种子决定
+func _daily_layout() -> Array:
+	return [
+		["XXXXXXXX", "XXXXXXXX", "XXXXXXXX", "XXXXXXXX"],  # 层0
+		["XXXXXX", "XXXXXX", "XXXXXX"],                     # 层1
+		["XXXX", "XXXX"],                                   # 层2
+	]
+
+func start_daily():
+	mode = Mode.DAILY
+	current_level = 0
+	slot_count = BASE_SLOT_COUNT
+	_clear_board()
+	_draw_slot_background()
+	game_over = false
+	is_paused = false
+	current_score = 0
+	combo_count = 0
+	_reset_skills()
+
+	seed(_daily_seed())                              # 固定种子 → 确定性棋盘
+	_generate_board({ "types": 6, "layers": _daily_layout() })
+	randomize()                                      # 生成完立刻恢复随机，避免影响后续模式
+
+	current_time_limit = 180.0
+	time_left = current_time_limit
+	timer_running = true
+	emit_signal("time_updated", time_left)
+	emit_signal("progress_changed", _count_playable())
+
 func _reset_skills():
 	skill_slot_left = 3
 	skill_time_left_count = 3
@@ -152,6 +196,8 @@ func next_level():
 func retry_level():
 	if mode == Mode.ENDLESS:
 		start_endless()
+	elif mode == Mode.DAILY:
+		start_daily()
 	else:
 		load_level(current_level)
 
@@ -453,7 +499,7 @@ func use_skill_slot():
 func use_skill_time():
 	if skill_time_left_count <= 0 or game_over or is_paused:
 		return
-	if mode != Mode.CAMPAIGN:
+	if not _is_timed():
 		return
 	_reset_idle()
 	skill_time_left_count -= 1
@@ -571,7 +617,7 @@ func pause_game():
 func resume_game():
 	is_paused = false
 	_reset_idle()  # 刚恢复不要立刻弹提示
-	if mode == Mode.CAMPAIGN and not game_over:
+	if _is_timed() and not game_over:
 		timer_running = true
 
 func quit_to_title():
@@ -592,6 +638,15 @@ func _check_win():
 	if mode == Mode.ENDLESS:
 		endless_wave += 1
 		_load_endless_wave()
+		return
+
+	if mode == Mode.DAILY:
+		game_over = true
+		timer_running = false
+		SoundManager.play("win")
+		var t = current_time_limit - time_left
+		SaveManager.record_daily(t)
+		emit_signal("daily_won", t)
 		return
 
 	game_over = true

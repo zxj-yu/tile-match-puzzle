@@ -19,6 +19,13 @@ extends CanvasLayer
 @onready var shuffle_skill_button = $SkillBar/ShuffleSkillButton
 # 撤销按钮在代码里动态创建并加入 SkillBar（HBoxContainer 会自动排布）
 var undo_skill_button: Button
+# 设置菜单（代码构建的覆盖层）
+var settings_menu
+# 成就查看界面 + 解锁提示浮层
+var achievements_menu
+var _toast_panel: Panel
+var _toast_title: Label
+var _toast_desc: Label
 
 var button_mode = "retry"
 
@@ -43,6 +50,51 @@ func _ready():
 	skill_bar.add_child(undo_skill_button)
 	undo_skill_button.pressed.connect(func(): grid_manager.use_skill_undo())
 
+	# 设置菜单覆盖层 + 两个入口按钮（标题屏、暂停面板）
+	settings_menu = preload("res://scripts/SettingsMenu.gd").new()
+	add_child(settings_menu)
+
+	# 成就查看界面
+	achievements_menu = preload("res://scripts/AchievementsMenu.gd").new()
+	add_child(achievements_menu)
+	# 成就解锁提示浮层
+	_build_toast()
+	AchievementManager.achievement_unlocked.connect(_show_achievement_toast)
+
+	# 标题屏入口按钮：每日挑战 / 设置 / 成就（上下堆叠）
+	var title_daily_btn = Button.new()
+	title_daily_btn.text = "📅 Daily Challenge"
+	title_daily_btn.position = Vector2(426, 566)
+	title_daily_btn.size = Vector2(300, 46)
+	$"../TitleScreen/Panel".add_child(title_daily_btn)
+	ButtonStyler.style(title_daily_btn, Color(0.55, 0.8, 0.5), 20)
+	title_daily_btn.pressed.connect(_on_title_daily)
+
+	var title_settings_btn = Button.new()
+	title_settings_btn.text = "⚙ Settings"
+	title_settings_btn.position = Vector2(426, 620)
+	title_settings_btn.size = Vector2(300, 46)
+	$"../TitleScreen/Panel".add_child(title_settings_btn)
+	ButtonStyler.style(title_settings_btn, Color(0.6, 0.62, 0.72), 20)
+	title_settings_btn.pressed.connect(_open_settings)
+
+	var title_ach_btn = Button.new()
+	title_ach_btn.text = "🏆 Achievements"
+	title_ach_btn.position = Vector2(426, 674)
+	title_ach_btn.size = Vector2(300, 46)
+	$"../TitleScreen/Panel".add_child(title_ach_btn)
+	ButtonStyler.style(title_ach_btn, Color(0.95, 0.75, 0.35), 20)
+	title_ach_btn.pressed.connect(_open_achievements)
+
+	# 暂停面板的齿轮入口
+	var pause_settings_btn = Button.new()
+	pause_settings_btn.text = "⚙"
+	pause_settings_btn.position = Vector2(244, 16)
+	pause_settings_btn.size = Vector2(44, 44)
+	pause_panel.add_child(pause_settings_btn)
+	ButtonStyler.style(pause_settings_btn, Color(0.6, 0.62, 0.72), 20)
+	pause_settings_btn.pressed.connect(_open_settings)
+
 	grid_manager.progress_changed.connect(_on_progress_changed)
 	grid_manager.level_changed.connect(_on_level_changed)
 	grid_manager.level_won_stars.connect(_on_level_won_stars)
@@ -52,6 +104,7 @@ func _ready():
 	grid_manager.time_updated.connect(_on_time_updated)
 	grid_manager.score_updated.connect(_on_score_updated)
 	grid_manager.skills_updated.connect(_on_skills_updated)
+	grid_manager.daily_won.connect(_on_daily_won)
 
 	result_panel.visible = false
 	start_menu.visible = false
@@ -104,6 +157,13 @@ func _on_title_endless():
 	pause_button.visible = true
 	skill_bar.visible = true
 	grid_manager.start_endless()
+
+func _on_title_daily():
+	SoundManager.play("button")
+	title_screen.hide_screen()
+	pause_button.visible = true
+	skill_bar.visible = true
+	grid_manager.start_daily()
 
 # ===== Level select =====
 func _on_level_chosen(index: int):
@@ -162,6 +222,55 @@ func _on_skills_updated(slot: int, time: int, shuffle: int, undo: int):
 	undo_skill_button.disabled = undo <= 0
 
 # ===== In-game buttons =====
+func _open_settings():
+	SoundManager.play("button")
+	settings_menu.open()
+
+func _open_achievements():
+	SoundManager.play("button")
+	achievements_menu.open()
+
+# ===== 成就解锁提示浮层 =====
+func _build_toast():
+	_toast_panel = Panel.new()
+	_toast_panel.size = Vector2(420, 84)
+	_toast_panel.position = Vector2(365, -100)   # 初始藏在屏幕上方
+	_toast_panel.z_index = 200
+	add_child(_toast_panel)
+
+	var icon = Label.new()
+	icon.text = "🏆"
+	icon.add_theme_font_size_override("font_size", 40)
+	icon.position = Vector2(16, 20)
+	_toast_panel.add_child(icon)
+
+	_toast_title = Label.new()
+	_toast_title.add_theme_font_size_override("font_size", 24)
+	_toast_title.position = Vector2(78, 12)
+	_toast_panel.add_child(_toast_title)
+
+	_toast_desc = Label.new()
+	_toast_desc.add_theme_font_size_override("font_size", 18)
+	_toast_desc.position = Vector2(78, 46)
+	_toast_desc.modulate = Color(0.9, 0.9, 0.92)
+	_toast_panel.add_child(_toast_desc)
+
+	_toast_panel.visible = false
+
+func _show_achievement_toast(title: String, desc: String):
+	_toast_title.text = "Achievement: " + title
+	_toast_desc.text = desc
+	_toast_panel.visible = true
+	_toast_panel.position.y = -100
+	SoundManager.play("win")
+	var tw = create_tween()
+	tw.tween_property(_toast_panel, "position:y", 24, 0.4)\
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_interval(2.4)
+	tw.tween_property(_toast_panel, "position:y", -100, 0.35)\
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+	tw.tween_callback(func(): _toast_panel.visible = false)
+
 func _on_add_button_pressed():
 	SoundManager.play("button")
 	grid_manager.retry_level()
@@ -176,6 +285,11 @@ func _on_result_button_pressed():
 			_return_to_level_select()
 		"restart_all":
 			_return_to_level_select()
+		"daily_done":
+			pause_button.visible = false
+			skill_bar.visible = false
+			grid_manager.quit_to_title()
+			title_screen.show_screen()
 
 # ===== Level events =====
 func _on_level_changed(level_index: int):
@@ -186,6 +300,8 @@ func _on_level_changed(level_index: int):
 func _on_progress_changed(remaining: int):
 	if grid_manager.mode == grid_manager.Mode.ENDLESS:
 		score_label.text = "Left: " + str(remaining)
+	elif grid_manager.mode == grid_manager.Mode.DAILY:
+		score_label.text = "Daily | Left: " + str(remaining)
 	else:
 		score_label.text = "Level " + str(grid_manager.current_level + 1) + " | Left: " + str(remaining)
 
@@ -204,10 +320,14 @@ func _on_score_updated(current: int, combo: int):
 		var mult = min(1.0 + (combo - 1) * 0.5, 3.0)
 		combo_str = "  Combo x" + str(combo) + " (×" + str(mult) + ")"
 	message_label.text = "Score " + str(current) + " | Rank: " + rank + combo_str
+	# 成就：连击、总分/段位
+	AchievementManager.on_combo(combo)
+	AchievementManager.on_score_changed()
 
 func _on_wave_changed(wave: int):
 	time_label.text = ""
 	score_label.text = "Endless | Wave " + str(wave)
+	AchievementManager.on_endless_wave(wave)  # 成就：无尽波数
 
 # ===== Results =====
 func _on_level_won_stars(level_index: int, stars: int, time_used: float):
@@ -215,6 +335,18 @@ func _on_level_won_stars(level_index: int, stars: int, time_used: float):
 	var star_str = "⭐".repeat(stars) + "☆".repeat(3 - stars)
 	result_label.text = star_str + "\nTime: " + str(int(time_used)) + "s\nRank: " + SaveManager.get_rank()
 	result_button.text = "Level Select"
+	pause_button.visible = false
+	skill_bar.visible = false
+	# 成就：首胜 / 三星 / 段位
+	AchievementManager.on_level_won(stars)
+	AchievementManager.on_score_changed()
+	_show_result()
+
+func _on_daily_won(time_used: float):
+	button_mode = "daily_done"
+	var best = SaveManager.get_daily_best()
+	result_label.text = "Daily cleared!\nTime: %ds\nBest today: %ds" % [int(time_used), int(best)]
+	result_button.text = "Back to Title"
 	pause_button.visible = false
 	skill_bar.visible = false
 	_show_result()
@@ -225,6 +357,9 @@ func _on_all_complete():
 	result_button.text = "Level Select"
 	pause_button.visible = false
 	skill_bar.visible = false
+	# 成就：通关全部关卡
+	AchievementManager.on_campaign_complete()
+	AchievementManager.on_score_changed()
 	_show_result()
 
 func _on_game_lost():

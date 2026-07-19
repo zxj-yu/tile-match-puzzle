@@ -8,6 +8,12 @@ var data = {
 	"endless_best": 0,
 	"total_score": 0,        # 累积总分（决定段位）
 	"best_merge_level": 1,   # 达到过的最高合成等级
+	"bgm_volume": 0.6,       # 背景音乐音量（线性 0~1）
+	"sfx_volume": 1.0,       # 音效音量（线性 0~1）
+	"muted": false,          # 总静音
+	"achievements": [],      # 已解锁成就 id 列表
+	"daily_date": "",        # 最近一次每日挑战的日期 (YYYY-MM-DD)
+	"daily_best_time": 0.0,  # 当日最好通关用时（秒），0 表示今天还没通关
 }
 
 # 段位定义
@@ -94,6 +100,33 @@ func record_merge_level(lv: int) -> bool:
 		return true
 	return false
 
+# ===== 每日挑战 =====
+func today_string() -> String:
+	var d = Time.get_date_dict_from_system()
+	return "%04d-%02d-%02d" % [d.year, d.month, d.day]
+
+# 记录一次每日挑战通关：换了新的一天则重置，否则只保留更快的成绩
+func record_daily(time_used: float):
+	var today = today_string()
+	if str(data.get("daily_date", "")) != today:
+		data["daily_date"] = today
+		data["daily_best_time"] = time_used
+	else:
+		var best = float(data.get("daily_best_time", 0.0))
+		if best <= 0.0 or time_used < best:
+			data["daily_best_time"] = time_used
+	save_game()
+
+func daily_done_today() -> bool:
+	return str(data.get("daily_date", "")) == today_string() \
+		and float(data.get("daily_best_time", 0.0)) > 0.0
+
+# 今天的最好用时；今天还没通关则返回 0.0
+func get_daily_best() -> float:
+	if daily_done_today():
+		return float(data["daily_best_time"])
+	return 0.0
+
 # ===== 重置 =====
 func reset_save():
 	data = {
@@ -102,5 +135,11 @@ func reset_save():
 		"endless_best": 0,
 		"total_score": 0,
 		"best_merge_level": 1,
+		"bgm_volume": 0.6,
+		"sfx_volume": 1.0,
+		"muted": false,
+		"achievements": [],
+		"daily_date": "",
+		"daily_best_time": 0.0,
 	}
 	save_game()

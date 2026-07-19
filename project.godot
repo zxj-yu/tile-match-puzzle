@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 SaveManager="*uid://ocxddxcj0n0g"
 SoundManager="*uid://fd0ap72lpt0w"
+AchievementManager="*res://scripts/AchievementManager.gd"
 
 [display]
 
