@@ -40,3 +40,17 @@ func test_daily_done_flag():
 	assert_false(SaveManager.daily_done_today(), "还没通关时应为 false")
 	SaveManager.record_daily(42.0)
 	assert_true(SaveManager.daily_done_today(), "通关后当天应为 true")
+
+# ===== Roguelite 记录 =====
+func test_rogue_records_best_stage_and_score_independently():
+	SaveManager.data["rogue_best_stage"] = 0
+	SaveManager.data["rogue_best_score"] = 0
+	SaveManager.record_rogue(3, 500)
+	assert_eq(int(SaveManager.data["rogue_best_stage"]), 3, "首次记录层数3")
+	assert_eq(int(SaveManager.data["rogue_best_score"]), 500, "首次记录分数500")
+	SaveManager.record_rogue(2, 999)   # 层数更低、分数更高
+	assert_eq(int(SaveManager.data["rogue_best_stage"]), 3, "更低层数不应覆盖最高层")
+	assert_eq(int(SaveManager.data["rogue_best_score"]), 999, "更高分应更新")
+	SaveManager.record_rogue(5, 100)   # 层数更高、分数更低
+	assert_eq(int(SaveManager.data["rogue_best_stage"]), 5, "更高层应更新")
+	assert_eq(int(SaveManager.data["rogue_best_score"]), 999, "更低分不应覆盖最高分")

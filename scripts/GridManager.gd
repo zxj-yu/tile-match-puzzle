@@ -1,11 +1,11 @@
 extends Node2D
 
-enum Mode { CAMPAIGN, ENDLESS, DAILY }
+enum Mode { CAMPAIGN, ENDLESS, DAILY, ROGUE }
 var mode = Mode.CAMPAIGN
 
-# 战役和每日都是限时模式，无尽不限时
+# 战役/每日/Roguelite 都是限时模式，无尽不限时
 func _is_timed() -> bool:
-	return mode == Mode.CAMPAIGN or mode == Mode.DAILY
+	return mode == Mode.CAMPAIGN or mode == Mode.DAILY or mode == Mode.ROGUE
 
 const CELL_SIZE = 76
 const GRID_ORIGIN = Vector2(60, 130)
@@ -49,6 +49,10 @@ var skill_undo_left: int = 3
 # 撤销栈：存被收进托盘的方块字典（与 tiles 里同一个引用），可原样放回棋盘
 var undo_stack = []
 
+# ===== Roguelite 运行状态 =====
+var rogue_stage := 0        # 当前层数（从 1 开始）
+var rogue_mods := {}        # 本局累积的增益修正
+
 signal level_won(level_index: int)
 signal level_won_stars(level_index: int, stars: int, time_used: float)
 signal all_levels_complete
@@ -60,6 +64,8 @@ signal time_updated(seconds_left: float)
 signal score_updated(current: int, combo: int)
 signal skills_updated(slot: int, time: int, shuffle: int, undo: int)
 signal daily_won(time_used: float)
+signal rogue_stage_started(stage: int, score: int)
+signal rogue_choose_buff(buffs: Array)
 
 func _ready():
 	_load_levels_from_json()
@@ -88,6 +94,8 @@ func _process(delta):
 		time_left = 0
 		timer_running = false
 		game_over = true
+		if mode == Mode.ROGUE:
+			SaveManager.record_rogue(rogue_stage, current_score)
 		SoundManager.play("lose")
 		emit_signal("game_lost")
 
@@ -162,6 +170,109 @@ func start_daily():
 	emit_signal("time_updated", time_left)
 	emit_signal("progress_changed", _count_playable())
 
+# ===== Roguelite：连打多层，每层通关三选一增益 =====
+const ROGUE_BUFFS = [
+	{ "id": "slot",    "name": "Extra Slot",  "desc": "+1 tray slot for the run" },
+	{ "id": "time",    "name": "Time Bonus",  "desc": "+15s on every board" },
+	{ "id": "undo",    "name": "Rewind+",     "desc": "+2 undo uses per board" },
+	{ "id": "shuffle", "name": "Reshuffle+",  "desc": "+2 shuffle uses per board" },
+	{ "id": "score",   "name": "Greed",       "desc": "+25% score gained" },
+	{ "id": "combo",   "name": "Combo Surge", "desc": "Combo multiplier cap +1" },
+]
+
+# 增益修正的默认值（也用于测试）
+static func default_rogue_mods() -> Dictionary:
+	return {
+		"bonus_slots": 0,
+		"bonus_time": 0.0,
+		"bonus_undo": 0,
+		"bonus_shuffle": 0,
+		"score_mult": 1.0,
+		"combo_cap": 3.0,
+	}
+
+# 把某个增益应用到 mods（纯函数，便于单元测试）
+static func apply_buff_to(mods: Dictionary, id: String) -> void:
+	match id:
+		"slot":    mods["bonus_slots"] += 1
+		"time":    mods["bonus_time"] += 15.0
+		"undo":    mods["bonus_undo"] += 2
+		"shuffle": mods["bonus_shuffle"] += 2
+		"score":   mods["score_mult"] += 0.25
+		"combo":   mods["combo_cap"] += 1.0
+
+# 随机抽 n 个不重复的增益供玩家选择
+func _random_buffs(n: int) -> Array:
+	var pool = ROGUE_BUFFS.duplicate()
+	pool.shuffle()
+	return pool.slice(0, min(n, pool.size()))
+
+# 根据当前修正返回连击上限 / 分数倍率（非 Roguelite 时用默认值）
+func _combo_cap() -> float:
+	if mode == Mode.ROGUE:
+		return float(rogue_mods.get("combo_cap", 3.0))
+	return 3.0
+
+func _score_mult() -> float:
+	if mode == Mode.ROGUE:
+		return float(rogue_mods.get("score_mult", 1.0))
+	return 1.0
+
+# 依难度递增生成矩形层叠棋盘
+func _rogue_layers(stage: int) -> Array:
+	var layer_count = min(2 + int(stage / 2), 4)
+	var base_w = min(5 + stage, 11)
+	var base_h = min(4 + int(stage / 2), 6)
+	var layers = []
+	for layer in range(layer_count):
+		var w = max(2, base_w - layer)
+		var h = max(2, base_h - layer)
+		var rows_arr = []
+		for r in range(h):
+			var line = ""
+			for c in range(w):
+				line += "X"
+			rows_arr.append(line)
+		layers.append(rows_arr)
+	return layers
+
+func start_rogue():
+	mode = Mode.ROGUE
+	rogue_stage = 1
+	rogue_mods = default_rogue_mods()
+	current_score = 0
+	combo_count = 0
+	_load_rogue_stage()
+
+func _load_rogue_stage():
+	_clear_board()
+	slot_count = BASE_SLOT_COUNT + int(rogue_mods.get("bonus_slots", 0))
+	_draw_slot_background()
+	game_over = false
+	is_paused = false
+	combo_count = 0
+	_reset_skills()
+	# 叠加本局增益带来的额外道具次数
+	skill_undo_left += int(rogue_mods.get("bonus_undo", 0))
+	skill_shuffle_left += int(rogue_mods.get("bonus_shuffle", 0))
+	emit_signal("skills_updated", skill_slot_left, skill_time_left_count, skill_shuffle_left, skill_undo_left)
+
+	var type_count = min(4 + int(rogue_stage / 2), 12)
+	_generate_board({ "types": type_count, "layers": _rogue_layers(rogue_stage) })
+
+	current_time_limit = 100.0 + float(rogue_mods.get("bonus_time", 0.0))
+	time_left = current_time_limit
+	timer_running = true
+	emit_signal("time_updated", time_left)
+	emit_signal("progress_changed", _count_playable())
+	emit_signal("rogue_stage_started", rogue_stage, current_score)
+
+# 玩家在结算里选了某个增益 → 应用并进入下一层
+func apply_rogue_buff(id: String):
+	apply_buff_to(rogue_mods, id)
+	rogue_stage += 1
+	_load_rogue_stage()
+
 func _reset_skills():
 	skill_slot_left = 3
 	skill_time_left_count = 3
@@ -198,6 +309,8 @@ func retry_level():
 		start_endless()
 	elif mode == Mode.DAILY:
 		start_daily()
+	elif mode == Mode.ROGUE:
+		start_rogue()
 	else:
 		load_level(current_level)
 
@@ -428,6 +541,8 @@ func _add_to_slots(item):
 		timer_running = false
 		if mode == Mode.ENDLESS:
 			SaveManager.record_endless(endless_wave)
+		elif mode == Mode.ROGUE:
+			SaveManager.record_rogue(rogue_stage, current_score)
 		SoundManager.play("lose")
 		emit_signal("game_lost")
 		return
@@ -466,8 +581,8 @@ func _check_triples() -> bool:
 func _award_score_with_effect(pos: Vector2):
 	combo_count += 1
 	combo_timer = COMBO_WINDOW
-	var mult = min(1.0 + (combo_count - 1) * 0.5, 3.0)
-	var points = int(100 * mult)
+	var mult = min(1.0 + (combo_count - 1) * 0.5, _combo_cap())
+	var points = int(100 * mult * _score_mult())
 	current_score += points
 	SaveManager.add_score(points)
 	emit_signal("score_updated", current_score, combo_count)
@@ -638,6 +753,14 @@ func _check_win():
 	if mode == Mode.ENDLESS:
 		endless_wave += 1
 		_load_endless_wave()
+		return
+
+	if mode == Mode.ROGUE:
+		# 本层清空：暂停并让玩家三选一增益，选完再进下一层
+		timer_running = false
+		SoundManager.play("win")
+		SaveManager.record_rogue(rogue_stage, current_score)
+		emit_signal("rogue_choose_buff", _random_buffs(3))
 		return
 
 	if mode == Mode.DAILY:

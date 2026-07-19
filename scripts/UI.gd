@@ -26,6 +26,8 @@ var achievements_menu
 var _toast_panel: Panel
 var _toast_title: Label
 var _toast_desc: Label
+# Roguelite 三选一增益界面
+var rogue_buff_menu
 
 var button_mode = "retry"
 
@@ -57,33 +59,45 @@ func _ready():
 	# 成就查看界面
 	achievements_menu = preload("res://scripts/AchievementsMenu.gd").new()
 	add_child(achievements_menu)
+	# Roguelite 增益选择界面
+	rogue_buff_menu = preload("res://scripts/RogueBuffMenu.gd").new()
+	add_child(rogue_buff_menu)
+	rogue_buff_menu.chosen.connect(func(id): grid_manager.apply_rogue_buff(id))
 	# 成就解锁提示浮层
 	_build_toast()
 	AchievementManager.achievement_unlocked.connect(_show_achievement_toast)
 
-	# 标题屏入口按钮：每日挑战 / 设置 / 成就（上下堆叠）
+	# 标题屏入口按钮：每日 / Roguelite / 设置 / 成就（上下堆叠）
 	var title_daily_btn = Button.new()
 	title_daily_btn.text = "📅 Daily Challenge"
-	title_daily_btn.position = Vector2(426, 566)
-	title_daily_btn.size = Vector2(300, 46)
+	title_daily_btn.position = Vector2(426, 564)
+	title_daily_btn.size = Vector2(300, 40)
 	$"../TitleScreen/Panel".add_child(title_daily_btn)
-	ButtonStyler.style(title_daily_btn, Color(0.55, 0.8, 0.5), 20)
+	ButtonStyler.style(title_daily_btn, Color(0.55, 0.8, 0.5), 19)
 	title_daily_btn.pressed.connect(_on_title_daily)
+
+	var title_rogue_btn = Button.new()
+	title_rogue_btn.text = "🎲 Roguelite Run"
+	title_rogue_btn.position = Vector2(426, 608)
+	title_rogue_btn.size = Vector2(300, 40)
+	$"../TitleScreen/Panel".add_child(title_rogue_btn)
+	ButtonStyler.style(title_rogue_btn, Color(0.85, 0.55, 0.8), 19)
+	title_rogue_btn.pressed.connect(_on_title_rogue)
 
 	var title_settings_btn = Button.new()
 	title_settings_btn.text = "⚙ Settings"
-	title_settings_btn.position = Vector2(426, 620)
-	title_settings_btn.size = Vector2(300, 46)
+	title_settings_btn.position = Vector2(426, 652)
+	title_settings_btn.size = Vector2(300, 40)
 	$"../TitleScreen/Panel".add_child(title_settings_btn)
-	ButtonStyler.style(title_settings_btn, Color(0.6, 0.62, 0.72), 20)
+	ButtonStyler.style(title_settings_btn, Color(0.6, 0.62, 0.72), 19)
 	title_settings_btn.pressed.connect(_open_settings)
 
 	var title_ach_btn = Button.new()
 	title_ach_btn.text = "🏆 Achievements"
-	title_ach_btn.position = Vector2(426, 674)
-	title_ach_btn.size = Vector2(300, 46)
+	title_ach_btn.position = Vector2(426, 696)
+	title_ach_btn.size = Vector2(300, 40)
 	$"../TitleScreen/Panel".add_child(title_ach_btn)
-	ButtonStyler.style(title_ach_btn, Color(0.95, 0.75, 0.35), 20)
+	ButtonStyler.style(title_ach_btn, Color(0.95, 0.75, 0.35), 19)
 	title_ach_btn.pressed.connect(_open_achievements)
 
 	# 暂停面板的齿轮入口
@@ -105,6 +119,8 @@ func _ready():
 	grid_manager.score_updated.connect(_on_score_updated)
 	grid_manager.skills_updated.connect(_on_skills_updated)
 	grid_manager.daily_won.connect(_on_daily_won)
+	grid_manager.rogue_choose_buff.connect(_on_rogue_choose_buff)
+	grid_manager.rogue_stage_started.connect(_on_rogue_stage_started)
 
 	result_panel.visible = false
 	start_menu.visible = false
@@ -164,6 +180,19 @@ func _on_title_daily():
 	pause_button.visible = true
 	skill_bar.visible = true
 	grid_manager.start_daily()
+
+func _on_title_rogue():
+	SoundManager.play("button")
+	title_screen.hide_screen()
+	pause_button.visible = true
+	skill_bar.visible = true
+	grid_manager.start_rogue()
+
+func _on_rogue_choose_buff(buffs: Array):
+	rogue_buff_menu.open(buffs)
+
+func _on_rogue_stage_started(stage: int, score: int):
+	message_label.text = "Roguelite — Stage %d   Score %d" % [stage, score]
 
 # ===== Level select =====
 func _on_level_chosen(index: int):
@@ -302,6 +331,8 @@ func _on_progress_changed(remaining: int):
 		score_label.text = "Left: " + str(remaining)
 	elif grid_manager.mode == grid_manager.Mode.DAILY:
 		score_label.text = "Daily | Left: " + str(remaining)
+	elif grid_manager.mode == grid_manager.Mode.ROGUE:
+		score_label.text = "Rogue St.%d | Left: %d" % [grid_manager.rogue_stage, remaining]
 	else:
 		score_label.text = "Level " + str(grid_manager.current_level + 1) + " | Left: " + str(remaining)
 
@@ -366,6 +397,10 @@ func _on_game_lost():
 	button_mode = "retry"
 	if grid_manager.mode == grid_manager.Mode.ENDLESS:
 		result_label.text = "Reached Wave " + str(grid_manager.endless_wave + 1) + "!"
+	elif grid_manager.mode == grid_manager.Mode.ROGUE:
+		result_label.text = "Run over!\nStage %d   Score %d\nBest: Stage %d / %d pts" % [
+			grid_manager.rogue_stage, grid_manager.current_score,
+			int(SaveManager.data["rogue_best_stage"]), int(SaveManager.data["rogue_best_score"])]
 	else:
 		result_label.text = "Time's up / Tray full!"
 	result_button.text = "Try Again"

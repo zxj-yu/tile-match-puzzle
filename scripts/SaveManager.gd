@@ -14,6 +14,8 @@ var data = {
 	"achievements": [],      # 已解锁成就 id 列表
 	"daily_date": "",        # 最近一次每日挑战的日期 (YYYY-MM-DD)
 	"daily_best_time": 0.0,  # 当日最好通关用时（秒），0 表示今天还没通关
+	"rogue_best_stage": 0,   # Roguelite 到达过的最高层数
+	"rogue_best_score": 0,   # Roguelite 单局最高分
 }
 
 # 段位定义
@@ -127,6 +129,19 @@ func get_daily_best() -> float:
 		return float(data["daily_best_time"])
 	return 0.0
 
+# ===== Roguelite 记录 =====
+# 分别保留最高层数与最高单局分
+func record_rogue(stage: int, score: int):
+	var changed = false
+	if stage > int(data.get("rogue_best_stage", 0)):
+		data["rogue_best_stage"] = stage
+		changed = true
+	if score > int(data.get("rogue_best_score", 0)):
+		data["rogue_best_score"] = score
+		changed = true
+	if changed:
+		save_game()
+
 # ===== 重置 =====
 func reset_save():
 	data = {
@@ -141,5 +156,7 @@ func reset_save():
 		"achievements": [],
 		"daily_date": "",
 		"daily_best_time": 0.0,
+		"rogue_best_stage": 0,
+		"rogue_best_score": 0,
 	}
 	save_game()
